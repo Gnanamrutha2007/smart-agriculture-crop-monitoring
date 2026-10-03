@@ -1,15 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Verify Email - Smart Agriculture</title>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
+    <title>Confirm Account - Smart Agriculture</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
 
+
 <body>
+
 
     <header class="navbar">
 
@@ -18,37 +30,53 @@
         </div>
 
         <nav>
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
         </nav>
 
     </header>
+
 
 
     <main class="auth-container">
 
         <div class="auth-card">
 
-            <h1>Verify Your Email</h1>
+            <h1>
+                Confirm Your Account
+            </h1>
+
 
             <p class="auth-description">
-                We sent a verification code to your email address.
-                Enter the code below to activate your farmer account.
+
+                We sent a verification code to your
+                email address.
+
             </p>
 
 
             <form id="confirmationForm">
 
+
                 <div class="form-group">
 
-                    <label for="verificationCode">
+                    <label for="confirmationCode">
+
                         Verification Code
+
                     </label>
+
 
                     <input
                         type="text"
-                        id="verificationCode"
-                        name="verificationCode"
+                        id="confirmationCode"
                         placeholder="Enter verification code"
                         required
                     >
@@ -56,26 +84,29 @@
                 </div>
 
 
+
                 <button
                     type="submit"
                     class="auth-button"
-                    id="confirmButton"
                 >
-                    Verify Email
+
+                    Confirm Account
+
                 </button>
 
 
                 <p id="confirmationMessage"></p>
+
 
             </form>
 
 
             <p class="login-link">
 
-                Already verified?
+                Already confirmed?
 
                 <a href="login.html">
-                    Go to Login
+                    Login here
                 </a>
 
             </p>
@@ -83,6 +114,7 @@
         </div>
 
     </main>
+
 
 
     <footer>
@@ -94,43 +126,13 @@
     </footer>
 
 
-    <!-- AWS Cognito JavaScript SDK -->
 
-    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+    <script src="js/amazon-cognito-identity.min.js"></script>
+
+    <script src="cognito.js"></script>
 
 
     <script>
-
-        // ==========================================
-        // COGNITO CONFIGURATION
-        // ==========================================
-
-        const poolData = {
-
-            UserPoolId:
-                "ap-south-1_QZT7vDGVW",
-
-            ClientId:
-                "470o9e2j7gd3888smk5cqqba9i"
-
-        };
-
-
-        const userPool =
-            new AmazonCognitoIdentity.CognitoUserPool(
-                poolData
-            );
-
-
-        // ==========================================
-        // GET EMAIL USED DURING REGISTRATION
-        // ==========================================
-
-        const email =
-            sessionStorage.getItem(
-                "registrationEmail"
-            );
-
 
         const form =
             document.getElementById(
@@ -144,32 +146,22 @@
             );
 
 
-        const confirmButton =
-            document.getElementById(
-                "confirmButton"
+        const email =
+            sessionStorage.getItem(
+                "confirmationEmail"
             );
 
-
-        // ==========================================
-        // CHECK EMAIL
-        // ==========================================
 
         if (!email) {
 
             message.textContent =
-                "Registration email was not found. Please register again.";
+                "Registration email not found. Please register again.";
 
             message.className =
                 "error-message";
 
-            confirmButton.disabled = true;
-
         }
 
-
-        // ==========================================
-        // CONFIRM EMAIL
-        // ==========================================
 
         form.addEventListener(
             "submit",
@@ -179,82 +171,46 @@
 
 
                 const code =
-                    document
-                        .getElementById(
-                            "verificationCode"
-                        )
-                        .value
-                        .trim();
+                    document.getElementById(
+                        "confirmationCode"
+                    ).value.trim();
 
 
-                if (!code) {
-
-                    message.textContent =
-                        "Please enter the verification code.";
-
-                    message.className =
-                        "error-message";
+                if (!email) {
 
                     return;
 
                 }
 
 
-                confirmButton.disabled = true;
+                const userData = {
 
-                confirmButton.textContent =
-                    "Verifying...";
+                    Username: email,
 
-                message.textContent =
-                    "Verifying your email...";
+                    Pool: userPool
 
-                message.className = "";
+                };
 
-
-                // ----------------------------------
-                // Create Cognito user object
-                // ----------------------------------
 
                 const cognitoUser =
-                    new AmazonCognitoIdentity.CognitoUser({
+                    new AmazonCognitoIdentity.CognitoUser(
+                        userData
+                    );
 
-                        Username: email,
-
-                        Pool: userPool
-
-                    });
-
-
-                // ----------------------------------
-                // Confirm registration
-                // ----------------------------------
 
                 cognitoUser.confirmRegistration(
-
                     code,
-
                     true,
-
                     function(error, result) {
-
-                        confirmButton.disabled =
-                            false;
-
-                        confirmButton.textContent =
-                            "Verify Email";
-
 
                         if (error) {
 
-                            console.error(
-                                "Confirmation error:",
-                                error
-                            );
+                            console.error(error);
 
 
                             message.textContent =
                                 error.message ||
-                                "Verification failed. Please check the code.";
+                                "Confirmation failed.";
 
                             message.className =
                                 "error-message";
@@ -265,34 +221,22 @@
 
 
                         console.log(
-                            "Email verification successful:",
+                            "Confirmation result:",
                             result
                         );
 
 
                         message.textContent =
-                            "Email verified successfully! You can now login.";
+                            "Account confirmed successfully! Redirecting to login...";
 
                         message.className =
                             "success-message";
 
 
-                        // Remove temporary registration data
-
                         sessionStorage.removeItem(
-                            "registrationEmail"
+                            "confirmationEmail"
                         );
 
-                        sessionStorage.removeItem(
-                            "registrationPhone"
-                        );
-
-                        sessionStorage.removeItem(
-                            "registrationAddress"
-                        );
-
-
-                        // Redirect to login
 
                         setTimeout(
                             function() {
@@ -305,7 +249,6 @@
                         );
 
                     }
-
                 );
 
             }
@@ -313,5 +256,7 @@
 
     </script>
 
+
 </body>
+
 </html>
