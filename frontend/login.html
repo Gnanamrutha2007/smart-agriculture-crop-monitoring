@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,6 +75,7 @@
                 <button
                     type="submit"
                     class="auth-button"
+                    id="loginButton"
                 >
                     Login
                 </button>
@@ -110,49 +110,197 @@
     </footer>
 
 
+    <!-- AWS Cognito JavaScript SDK -->
+
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+
+
     <script>
 
-        const loginForm =
+        // ==========================================
+        // AMAZON COGNITO CONFIGURATION
+        // ==========================================
+
+        const poolData = {
+
+            UserPoolId:
+                "ap-south-1_QZT7vDGVW",
+
+            ClientId:
+                "470o9e2j7gd3888smk5cqqba9i"
+
+        };
+
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(
+                poolData
+            );
+
+
+        // ==========================================
+        // FORM ELEMENTS
+        // ==========================================
+
+        const form =
             document.getElementById("loginForm");
 
-        const loginMessage =
+        const message =
             document.getElementById("loginMessage");
 
-
-        loginForm.addEventListener("submit", function(event) {
-
-            event.preventDefault();
+        const loginButton =
+            document.getElementById("loginButton");
 
 
-            const email =
-                document.getElementById("email").value;
+        // ==========================================
+        // LOGIN
+        // ==========================================
 
-            const password =
-                document.getElementById("password").value;
+        form.addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
 
 
-            if (!email || !password) {
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
 
-                loginMessage.textContent =
-                    "Please enter your email and password.";
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
 
-                loginMessage.className =
-                    "error-message";
 
-                return;
+                loginButton.disabled = true;
+
+                loginButton.textContent =
+                    "Logging in...";
+
+                message.textContent =
+                    "Authenticating with Amazon Cognito...";
+
+                message.className = "";
+
+
+                // ==================================
+                // CREATE COGNITO USER
+                // ==================================
+
+                const cognitoUser =
+                    new AmazonCognitoIdentity.CognitoUser({
+
+                        Username: email,
+
+                        Pool: userPool
+
+                    });
+
+
+                // ==================================
+                // LOGIN CREDENTIALS
+                // ==================================
+
+                const authenticationData =
+                    {
+
+                        Username: email,
+
+                        Password: password
+
+                    };
+
+
+                const authenticationDetails =
+                    new AmazonCognitoIdentity.AuthenticationDetails(
+                        authenticationData
+                    );
+
+
+                // ==================================
+                // AUTHENTICATE USER
+                // ==================================
+
+                cognitoUser.authenticateUser(
+
+                    authenticationDetails,
+
+                    {
+
+                        onSuccess: function(result) {
+
+                            console.log(
+                                "Login successful"
+                            );
+
+                            console.log(
+                                "ID Token:",
+                                result.getIdToken().getJwtToken()
+                            );
+
+                            console.log(
+                                "Access Token:",
+                                result.getAccessToken().getJwtToken()
+                            );
+
+
+                            message.textContent =
+                                "Login successful! Redirecting...";
+
+                            message.className =
+                                "success-message";
+
+
+                            // Redirect to dashboard
+
+                            setTimeout(
+                                function() {
+
+                                    window.location.href =
+                                        "dashboard.html";
+
+                                },
+                                1000
+                            );
+
+                        },
+
+
+                        onFailure: function(error) {
+
+                            console.error(
+                                "Login error:",
+                                error
+                            );
+
+
+                            loginButton.disabled =
+                                false;
+
+                            loginButton.textContent =
+                                "Login";
+
+
+                            message.textContent =
+                                error.message ||
+                                "Login failed. Please check your email and password.";
+
+                            message.className =
+                                "error-message";
+
+                        }
+
+                    }
+
+                );
+
             }
-
-
-            loginMessage.textContent =
-                "Login form submitted. Amazon Cognito will be connected in the next stage.";
-
-            loginMessage.className =
-                "success-message";
-
-        });
+        );
 
     </script>
 
 </body>
-
 </html>

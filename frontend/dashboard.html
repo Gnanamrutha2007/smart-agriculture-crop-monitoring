@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Farmer Dashboard - Smart Agriculture</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body class="dashboard-page">
+
+    <!-- ============================= -->
+    <!-- NAVIGATION -->
+    <!-- ============================= -->
+
+    <header class="dashboard-navbar">
+
+        <div class="dashboard-logo">
+            <span class="logo-icon">🌱</span>
+            <span>Smart Agriculture</span>
+        </div>
+
+        <nav class="dashboard-nav">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+            >
+                Logout
+            </button>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ============================= -->
+    <!-- MAIN DASHBOARD -->
+    <!-- ============================= -->
+
+    <main class="dashboard-main">
+
+
+        <!-- Welcome section -->
+
+        <section class="welcome-section">
+
+            <div>
+
+                <p class="dashboard-label">
+                    FARMER DASHBOARD
+                </p>
+
+                <h1>
+                    Welcome back! 🌱
+                </h1>
+
+                <p class="welcome-text">
+                    Monitor your farms, crops and environmental
+                    conditions from one place.
+                </p>
+
+            </div>
+
+
+            <div class="farmer-account">
+
+                <div class="account-icon">
+                    👨‍🌾
+                </div>
+
+                <div>
+
+                    <span class="account-label">
+                        Logged in as
+                    </span>
+
+                    <strong id="farmerEmail">
+                        Loading...
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- SUMMARY CARDS -->
+        <!-- ============================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon farm-icon">
+                    🌾
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Farms
+                    </span>
+
+                    <strong>
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon field-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Fields
+                    </span>
+
+                    <strong>
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon crop-icon">
+                    🌱
+                </div>
+
+                <div>
+
+                    <span>
+                        Active Crops
+                    </span>
+
+                    <strong>
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon alert-icon">
+                    🚨
+                </div>
+
+                <div>
+
+                    <span>
+                        Active Alerts
+                    </span>
+
+                    <strong>
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- MANAGEMENT SECTION -->
+        <!-- ============================= -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        FARM MANAGEMENT
+                    </p>
+
+                    <h2>
+                        Manage Your Agriculture
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-grid">
+
+
+                <!-- Farms -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🌾
+                    </div>
+
+                    <h3>
+                        Farms
+                    </h3>
+
+                    <p>
+                        Register and manage your farms
+                        and agricultural locations.
+                    </p>
+
+                    <button class="dashboard-button">
+                        Manage Farms →
+                    </button>
+
+                </div>
+
+
+                <!-- Fields -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        📍
+                    </div>
+
+                    <h3>
+                        Fields
+                    </h3>
+
+                    <p>
+                        Manage individual fields
+                        associated with your farms.
+                    </p>
+
+                    <button class="dashboard-button">
+                        Manage Fields →
+                    </button>
+
+                </div>
+
+
+                <!-- Crops -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🌱
+                    </div>
+
+                    <h3>
+                        Crops
+                    </h3>
+
+                    <p>
+                        Register crops and record
+                        planting dates and crop types.
+                    </p>
+
+                    <button class="dashboard-button">
+                        Manage Crops →
+                    </button>
+
+                </div>
+
+
+                <!-- Environment -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🌡️
+                    </div>
+
+                    <h3>
+                        Environment
+                    </h3>
+
+                    <p>
+                        Monitor temperature, humidity
+                        and soil conditions.
+                    </p>
+
+                    <button class="dashboard-button">
+                        View Environment →
+                    </button>
+
+                </div>
+
+
+                <!-- Irrigation -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        💧
+                    </div>
+
+                    <h3>
+                        Irrigation
+                    </h3>
+
+                    <p>
+                        Record irrigation activities
+                        and monitor water requirements.
+                    </p>
+
+                    <button class="dashboard-button">
+                        Manage Irrigation →
+                    </button>
+
+                </div>
+
+
+                <!-- Crop Health -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        🌿
+                    </div>
+
+                    <h3>
+                        Crop Health
+                    </h3>
+
+                    <p>
+                        Monitor crop growth and
+                        maintain crop health history.
+                    </p>
+
+                    <button class="dashboard-button">
+                        View Crop Health →
+                    </button>
+
+                </div>
+
+
+                <!-- Alerts -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon alert-card-icon">
+                        🚨
+                    </div>
+
+                    <h3>
+                        Alerts
+                    </h3>
+
+                    <p>
+                        View irrigation and environmental
+                        threshold alerts.
+                    </p>
+
+                    <button class="dashboard-button">
+                        View Alerts →
+                    </button>
+
+                </div>
+
+
+                <!-- Reports -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Reports
+                    </h3>
+
+                    <p>
+                        View field-wise, crop-wise and
+                        historical reports.
+                    </p>
+
+                    <button class="dashboard-button">
+                        View Reports →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ============================= -->
+        <!-- CURRENT STATUS -->
+        <!-- ============================= -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        FARM MONITORING
+                    </p>
+
+                    <h2>
+                        Current Environment
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="environment-grid">
+
+
+                <div class="environment-card">
+
+                    <div class="environment-icon">
+                        🌡️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Temperature
+                        </span>
+
+                        <strong>
+                            --
+                        </strong>
+
+                        <small>
+                            No sensor data yet
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="environment-card">
+
+                    <div class="environment-icon">
+                        💧
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Humidity
+                        </span>
+
+                        <strong>
+                            --
+                        </strong>
+
+                        <small>
+                            No sensor data yet
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="environment-card">
+
+                    <div class="environment-icon">
+                        🌱
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Soil Moisture
+                        </span>
+
+                        <strong>
+                            --
+                        </strong>
+
+                        <small>
+                            No sensor data yet
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="environment-card">
+
+                    <div class="environment-icon">
+                        ☁️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Weather
+                        </span>
+
+                        <strong>
+                            --
+                        </strong>
+
+                        <small>
+                            Weather integration pending
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ============================= -->
+    <!-- FOOTER -->
+    <!-- ============================= -->
+
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 Smart Agriculture Crop Monitoring System
+        </p>
+
+        <p>
+            Cloud-Based Smart Agriculture
+        </p>
+
+    </footer>
+
+
+    <!-- AWS Cognito -->
+
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+
+
+    <script>
+
+        // ==========================================
+        // COGNITO CONFIGURATION
+        // ==========================================
+
+        const poolData = {
+
+            UserPoolId:
+                "ap-south-1_QZT7vDGVW",
+
+            ClientId:
+                "470o9e2j7gd3888smk5cqqba9i"
+
+        };
+
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(
+                poolData
+            );
+
+
+        // ==========================================
+        // CHECK AUTHENTICATION
+        // ==========================================
+
+        const currentUser =
+            userPool.getCurrentUser();
+
+
+        if (!currentUser) {
+
+            window.location.href =
+                "login.html";
+
+        }
+        else {
+
+            currentUser.getSession(
+                function(error, session) {
+
+                    if (error || !session.isValid()) {
+
+                        window.location.href =
+                            "login.html";
+
+                        return;
+
+                    }
+
+
+                    // ==================================
+                    // GET FARMER INFORMATION
+                    // ==================================
+
+                    currentUser.getUserAttributes(
+                        function(error, attributes) {
+
+                            if (error) {
+
+                                console.error(error);
+
+                                return;
+
+                            }
+
+
+                            let email = "";
+
+
+                            attributes.forEach(
+                                function(attribute) {
+
+                                    if (
+                                        attribute.getName()
+                                        === "email"
+                                    ) {
+
+                                        email =
+                                            attribute.getValue();
+
+                                    }
+
+                                }
+                            );
+
+
+                            document.getElementById(
+                                "farmerEmail"
+                            ).textContent =
+                                email;
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+
+        document
+            .getElementById("logoutButton")
+            .addEventListener(
+                "click",
+                function() {
+
+                    const user =
+                        userPool.getCurrentUser();
+
+
+                    if (user) {
+
+                        user.signOut();
+
+                    }
+
+
+                    window.location.href =
+                        "login.html";
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>

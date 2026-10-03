@@ -144,6 +144,7 @@
                 <button
                     type="submit"
                     class="auth-button"
+                    id="registerButton"
                 >
                     Create Farmer Account
                 </button>
@@ -178,7 +179,28 @@
     </footer>
 
 
+    <!-- AWS SDK for Cognito -->
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+
+
     <script>
+
+        // ==========================================
+        // AMAZON COGNITO CONFIGURATION
+        // ==========================================
+
+        const poolData = {
+            UserPoolId: "ap-south-1_QZT7vDGVW",
+            ClientId: "470o9e2j7gd3888smk5cqqba9i"
+        };
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+
+        // ==========================================
+        // FORM ELEMENTS
+        // ==========================================
 
         const form =
             document.getElementById("registrationForm");
@@ -186,11 +208,30 @@
         const message =
             document.getElementById("registrationMessage");
 
+        const registerButton =
+            document.getElementById("registerButton");
+
+
+        // ==========================================
+        // REGISTRATION
+        // ==========================================
 
         form.addEventListener("submit", function(event) {
 
             event.preventDefault();
 
+
+            const fullName =
+                document.getElementById("fullName").value.trim();
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const phone =
+                document.getElementById("phone").value.trim();
+
+            const address =
+                document.getElementById("address").value.trim();
 
             const password =
                 document.getElementById("password").value;
@@ -198,6 +239,10 @@
             const confirmPassword =
                 document.getElementById("confirmPassword").value;
 
+
+            // ------------------------------------------
+            // Check password match
+            // ------------------------------------------
 
             if (password !== confirmPassword) {
 
@@ -207,14 +252,126 @@
                 message.className = "error-message";
 
                 return;
-
             }
 
 
-            message.textContent =
-                "Registration form submitted successfully. AWS Cognito will be connected in the next stage.";
+            // ------------------------------------------
+            // Disable button while registering
+            // ------------------------------------------
 
-            message.className = "success-message";
+            registerButton.disabled = true;
+
+            registerButton.textContent =
+                "Creating Account...";
+
+
+            message.textContent =
+                "Creating your farmer account...";
+
+            message.className = "";
+
+
+            // ------------------------------------------
+            // Cognito user attributes
+            // ------------------------------------------
+
+            const attributes = [
+
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: "email",
+                    Value: email
+                }),
+
+                new AmazonCognitoIdentity.CognitoUserAttribute({
+                    Name: "name",
+                    Value: fullName
+                })
+
+            ];
+
+
+            // ------------------------------------------
+            // Create Cognito account
+            // ------------------------------------------
+
+            userPool.signUp(
+                email,
+                password,
+                attributes,
+                null,
+                function(error, result) {
+
+                    registerButton.disabled = false;
+
+                    registerButton.textContent =
+                        "Create Farmer Account";
+
+
+                    if (error) {
+
+                        console.error(
+                            "Cognito registration error:",
+                            error
+                        );
+
+
+                        message.textContent =
+                            error.message ||
+                            "Registration failed. Please try again.";
+
+                        message.className =
+                            "error-message";
+
+                        return;
+                    }
+
+
+                    console.log(
+                        "Cognito registration successful:",
+                        result
+                    );
+
+
+                    // Store temporary farmer information.
+                    // We will move application profile data
+                    // into DynamoDB later.
+
+                    sessionStorage.setItem(
+                        "registrationEmail",
+                        email
+                    );
+
+                    sessionStorage.setItem(
+                        "registrationPhone",
+                        phone
+                    );
+
+                    sessionStorage.setItem(
+                        "registrationAddress",
+                        address
+                    );
+
+
+                    message.textContent =
+                        "Account created successfully! Please check your email for the verification code.";
+
+                    message.className =
+                        "success-message";
+
+
+                    // ------------------------------------------
+                    // Temporary next step
+                    // ------------------------------------------
+
+                    setTimeout(function() {
+
+                        window.location.href =
+                            "confirm.html";
+
+                    }, 1500);
+
+                }
+            );
 
         });
 
