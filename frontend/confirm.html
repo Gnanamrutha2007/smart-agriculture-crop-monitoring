@@ -19,9 +19,7 @@
 
 </head>
 
-
 <body>
-
 
     <header class="navbar">
 
@@ -31,48 +29,49 @@
 
         <nav>
 
-            <a href="index.html">
-                Home
-            </a>
+            <a href="index.html">Home</a>
 
-            <a href="login.html">
-                Login
-            </a>
+            <a href="login.html">Login</a>
 
         </nav>
 
     </header>
 
 
-
     <main class="auth-container">
 
         <div class="auth-card">
 
-            <h1>
-                Confirm Your Account
-            </h1>
-
+            <h1>Confirm Your Account</h1>
 
             <p class="auth-description">
-
-                We sent a verification code to your
-                email address.
-
+                Enter the verification code sent to your email address.
             </p>
 
 
             <form id="confirmationForm">
 
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your registered email"
+                        required
+                    >
+
+                </div>
+
 
                 <div class="form-group">
 
                     <label for="confirmationCode">
-
                         Verification Code
-
                     </label>
-
 
                     <input
                         type="text"
@@ -84,19 +83,26 @@
                 </div>
 
 
-
                 <button
                     type="submit"
                     class="auth-button"
+                    id="confirmButton"
                 >
-
                     Confirm Account
+                </button>
 
+
+                <button
+                    type="button"
+                    class="auth-button"
+                    id="resendButton"
+                    style="margin-top: 10px;"
+                >
+                    Resend Verification Code
                 </button>
 
 
                 <p id="confirmationMessage"></p>
-
 
             </form>
 
@@ -116,7 +122,6 @@
     </main>
 
 
-
     <footer>
 
         <p>
@@ -126,17 +131,51 @@
     </footer>
 
 
+    <!-- Amazon Cognito JavaScript Library -->
 
-    <script src="js/amazon-cognito-identity.min.js"></script>
-
-    <script src="cognito.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
 
 
     <script>
 
+        // ================================
+        // AMAZON COGNITO CONFIGURATION
+        // ================================
+
+        const poolData = {
+
+            UserPoolId: "ap-south-1_QZT7vDGVW",
+
+            ClientId: "470o9e2j7gd3888smk5cqqba9i"
+
+        };
+
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(
+                poolData
+            );
+
+
+        // ================================
+        // GET HTML ELEMENTS
+        // ================================
+
         const form =
             document.getElementById(
                 "confirmationForm"
+            );
+
+
+        const emailInput =
+            document.getElementById(
+                "email"
+            );
+
+
+        const codeInput =
+            document.getElementById(
+                "confirmationCode"
             );
 
 
@@ -146,22 +185,38 @@
             );
 
 
-        const email =
-            sessionStorage.getItem(
-                "confirmationEmail"
+        const resendButton =
+            document.getElementById(
+                "resendButton"
             );
 
 
-        if (!email) {
+        const confirmButton =
+            document.getElementById(
+                "confirmButton"
+            );
 
-            message.textContent =
-                "Registration email not found. Please register again.";
 
-            message.className =
-                "error-message";
+        // ================================
+        // GET SAVED EMAIL
+        // ================================
+
+        const savedEmail =
+            sessionStorage.getItem(
+                "registrationEmail"
+            );
+
+
+        if (savedEmail) {
+
+            emailInput.value = savedEmail;
 
         }
 
+
+        // ================================
+        // CONFIRM ACCOUNT
+        // ================================
 
         form.addEventListener(
             "submit",
@@ -170,17 +225,44 @@
                 event.preventDefault();
 
 
+                const email =
+                    emailInput.value.trim();
+
+
                 const code =
-                    document.getElementById(
-                        "confirmationCode"
-                    ).value.trim();
+                    codeInput.value.trim();
 
 
                 if (!email) {
 
+                    message.textContent =
+                        "Please enter your registered email.";
+
+                    message.className =
+                        "error-message";
+
                     return;
 
                 }
+
+
+                if (!code) {
+
+                    message.textContent =
+                        "Please enter the verification code.";
+
+                    message.className =
+                        "error-message";
+
+                    return;
+
+                }
+
+
+                confirmButton.disabled = true;
+
+                confirmButton.textContent =
+                    "Confirming...";
 
 
                 const userData = {
@@ -199,13 +281,20 @@
 
 
                 cognitoUser.confirmRegistration(
+
                     code,
+
                     true,
+
                     function(error, result) {
+
 
                         if (error) {
 
-                            console.error(error);
+                            console.error(
+                                "Confirmation error:",
+                                error
+                            );
 
 
                             message.textContent =
@@ -215,13 +304,21 @@
                             message.className =
                                 "error-message";
 
+
+                            confirmButton.disabled =
+                                false;
+
+                            confirmButton.textContent =
+                                "Confirm Account";
+
+
                             return;
 
                         }
 
 
                         console.log(
-                            "Confirmation result:",
+                            "Confirmation successful:",
                             result
                         );
 
@@ -234,7 +331,7 @@
 
 
                         sessionStorage.removeItem(
-                            "confirmationEmail"
+                            "registrationEmail"
                         );
 
 
@@ -249,13 +346,119 @@
                         );
 
                     }
+
+                );
+
+            }
+        );
+
+
+        // ================================
+        // RESEND VERIFICATION CODE
+        // ================================
+
+        resendButton.addEventListener(
+            "click",
+            function() {
+
+                const email =
+                    emailInput.value.trim();
+
+
+                if (!email) {
+
+                    message.textContent =
+                        "Please enter your registered email first.";
+
+                    message.className =
+                        "error-message";
+
+                    return;
+
+                }
+
+
+                resendButton.disabled = true;
+
+                resendButton.textContent =
+                    "Sending...";
+
+
+                const userData = {
+
+                    Username: email,
+
+                    Pool: userPool
+
+                };
+
+
+                const cognitoUser =
+                    new AmazonCognitoIdentity.CognitoUser(
+                        userData
+                    );
+
+
+                cognitoUser.resendConfirmationCode(
+
+                    function(error, result) {
+
+
+                        if (error) {
+
+                            console.error(
+                                "Resend error:",
+                                error
+                            );
+
+
+                            message.textContent =
+                                error.message ||
+                                "Could not resend verification code.";
+
+                            message.className =
+                                "error-message";
+
+
+                            resendButton.disabled =
+                                false;
+
+                            resendButton.textContent =
+                                "Resend Verification Code";
+
+
+                            return;
+
+                        }
+
+
+                        console.log(
+                            "Verification code resent:",
+                            result
+                        );
+
+
+                        message.textContent =
+                            "A new verification code has been sent to your email.";
+
+                        message.className =
+                            "success-message";
+
+
+                        resendButton.disabled =
+                            false;
+
+                        resendButton.textContent =
+                            "Resend Verification Code";
+
+                    }
+
                 );
 
             }
         );
 
     </script>
-
 
 </body>
 
