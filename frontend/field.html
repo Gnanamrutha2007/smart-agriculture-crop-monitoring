@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Register Field - Smart Agriculture</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <div class="logo">
+        🌱 Smart Agriculture
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="index.html">
+            Home
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<main class="auth-container">
+
+    <div class="auth-card">
+
+        <h1>
+            Register Field
+        </h1>
+
+
+        <p class="auth-description">
+
+            Enter the details of your agricultural field.
+
+        </p>
+
+
+        <form id="fieldForm">
+
+
+            <div class="form-group">
+
+                <label for="fieldName">
+                    Field Name
+                </label>
+
+                <input
+                    type="text"
+                    id="fieldName"
+                    placeholder="Example: North Field"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="area">
+                    Field Area
+                </label>
+
+                <input
+                    type="text"
+                    id="area"
+                    placeholder="Example: 2 acres"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="soilType">
+                    Soil Type
+                </label>
+
+                <select
+                    id="soilType"
+                    required
+                >
+
+                    <option value="">
+                        Select soil type
+                    </option>
+
+                    <option value="Loamy">
+                        Loamy
+                    </option>
+
+                    <option value="Clay">
+                        Clay
+                    </option>
+
+                    <option value="Sandy">
+                        Sandy
+                    </option>
+
+                    <option value="Black Soil">
+                        Black Soil
+                    </option>
+
+                    <option value="Red Soil">
+                        Red Soil
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="auth-button"
+                id="fieldButton"
+            >
+
+                Register Field
+
+            </button>
+
+
+            <p id="fieldMessage"></p>
+
+
+        </form>
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <p>
+        © 2026 Smart Agriculture Crop Monitoring System
+    </p>
+
+</footer>
+
+
+
+<script>
+
+const form =
+    document.getElementById("fieldForm");
+
+const message =
+    document.getElementById("fieldMessage");
+
+const button =
+    document.getElementById("fieldButton");
+
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        /*
+         * Get the logged-in farmer ID.
+         */
+
+        const farmerId =
+            sessionStorage.getItem("farmerId");
+
+
+        if (!farmerId) {
+
+            message.textContent =
+                "Farmer session not found. Please login again.";
+
+            message.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        /*
+         * Get the registered farm ID.
+         */
+
+        const farmId =
+            sessionStorage.getItem("farmId");
+
+
+        if (!farmId) {
+
+            message.textContent =
+                "Farm information not found. Please register a farm first.";
+
+            message.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        const fieldName =
+            document
+                .getElementById("fieldName")
+                .value
+                .trim();
+
+
+        const area =
+            document
+                .getElementById("area")
+                .value
+                .trim();
+
+
+        const soilType =
+            document
+                .getElementById("soilType")
+                .value;
+
+
+        /*
+         * Generate a unique field ID.
+         */
+
+        const fieldId =
+            "FIELD-" + Date.now();
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Registering Field...";
+
+
+        message.textContent =
+            "Saving field information to AWS...";
+
+
+        try {
+
+            const response =
+                await fetch(
+
+                    "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/fields",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            fieldId:
+                                fieldId,
+
+                            farmerId:
+                                farmerId,
+
+                            farmId:
+                                farmId,
+
+                            fieldName:
+                                fieldName,
+
+                            area:
+                                area,
+
+                            soilType:
+                                soilType
+
+                        })
+
+                    }
+
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Field API response:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Field registration failed."
+                );
+
+            }
+
+
+            /*
+             * Store the generated field ID.
+             */
+
+            if (
+                data.field &&
+                data.field.fieldId
+            ) {
+
+                sessionStorage.setItem(
+                    "fieldId",
+                    data.field.fieldId
+                );
+
+            }
+
+
+            message.textContent =
+                "Field registered successfully!";
+
+            message.className =
+                "success-message";
+
+
+            form.reset();
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Field";
+
+
+        } catch (error) {
+
+            console.error(
+                "Field registration error:",
+                error
+            );
+
+
+            message.textContent =
+                error.message ||
+                "Unable to register field.";
+
+            message.className =
+                "error-message";
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Field";
+
+        }
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>
