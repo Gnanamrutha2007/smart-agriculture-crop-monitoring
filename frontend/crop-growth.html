@@ -236,6 +236,64 @@
                aria-live="polite"></p>
 
         </form>
+        
+
+         
+<section class="growth-history">
+    <div class="history-heading">
+        <div>
+            <span class="history-eyebrow">FIELD OBSERVATIONS</span>
+            <h2>Crop Growth History</h2>
+            <p>Track crop development and review your previous observations.</p>
+        </div>
+
+        <button type="button" id="loadGrowthBtn" class="refresh-btn">
+            <span class="refresh-icon">↻</span>
+            Refresh Records
+        </button>
+    </div>
+
+    <div class="history-stats">
+        <div class="history-stat-icon">🌱</div>
+        <div>
+            <span class="history-stat-label">TOTAL OBSERVATIONS</span>
+            <strong id="growthRecordCount">—</strong>
+        </div>
+    </div>
+
+    <div id="historyMessage" class="history-message" role="status">
+        Your saved crop observations will appear here.
+    </div>
+
+    <div class="history-table-wrap">
+        <table class="growth-table">
+            <thead>
+                <tr>
+                    <th>OBSERVATION DATE</th>
+                    <th>CROP ID</th>
+                    <th>GROWTH STAGE</th>
+                    <th>PLANT HEIGHT</th>
+                    <th>LEAF CONDITION</th>
+                    <th>NOTES</th>
+                </tr>
+            </thead>
+            <tbody id="growthHistoryBody">
+                <tr>
+                    <td colspan="6" class="history-empty">
+                        Click “Refresh Records” to load your observations.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="history-footer">
+        <span class="footer-dot"></span>
+        Crop growth records retrieved from Amazon DynamoDB
+    </div>
+</section>
+    
+
 
     </main>
 
@@ -483,6 +541,67 @@
                 saveButton.textContent = "Save Growth Observation";
             }
         });
+
+        
+const GROWTH_HISTORY_API =
+    "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-growth";
+
+const loadGrowthBtn = document.getElementById("loadGrowthBtn");
+const growthHistoryBody = document.getElementById("growthHistoryBody");
+const historyMessage = document.getElementById("historyMessage");
+
+async function loadGrowthHistory() {
+    loadGrowthBtn.disabled = true;
+    historyMessage.textContent = "Loading crop growth records...";
+
+    try {
+        const response = await fetch(GROWTH_HISTORY_API);
+
+        if (!response.ok) {
+            throw new Error("API request failed: " + response.status);
+        }
+
+        const data = await response.json();
+        const records = data.growthRecords || [];
+
+        growthHistoryBody.replaceChildren();
+
+        if (records.length === 0) {
+            const row = growthHistoryBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 6;
+            cell.textContent = "No crop growth records found.";
+        } else {
+            records.forEach(record => {
+                const row = growthHistoryBody.insertRow();
+
+                [
+                    record.observationDate || "—",
+                    record.cropId || "—",
+                    record.growthStage || "—",
+                    record.plantHeight ?? "—",
+                    record.leafCondition || "—",
+                    record.notes || "—"
+                ].forEach(value => {
+                    const cell = row.insertCell();
+                    cell.textContent = String(value);
+                });
+            });
+        }
+
+        historyMessage.textContent =
+            "Successfully loaded " + records.length + " records.";
+    } catch (error) {
+        console.error("Error loading crop growth:", error);
+        historyMessage.textContent =
+            "Could not load records. Check the API and browser console.";
+    } finally {
+        loadGrowthBtn.disabled = false;
+    }
+}
+
+loadGrowthBtn.addEventListener("click", loadGrowthHistory);
+
     </script>
 
 </body>
