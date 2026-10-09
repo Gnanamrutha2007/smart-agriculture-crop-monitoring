@@ -1,16 +1,12 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Farmer Dashboard - Smart Agriculture</title>
 
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- Chart.js for historical sensor readings -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -90,7 +86,7 @@
 
         </section>
 
-        <!-- Farm management -->
+        <!-- Farm management and feature cards -->
         <section class="dashboard-section">
 
             <div class="section-heading">
@@ -135,7 +131,7 @@
                     </button>
                 </div>
 
-                <!-- Crop Growth: NEW -->
+                <!-- Crop Growth -->
                 <div class="dashboard-card">
                     <div class="card-icon">🌿</div>
                     <h3>Crop Growth</h3>
@@ -161,23 +157,33 @@
                 </div>
 
                 <!-- Irrigation -->
-                <div class="dashboard-card">
-                    <div class="card-icon">💧</div>
-                    <h3>Irrigation</h3>
-                    <p>Record irrigation activities and monitor water requirements.</p>
-                    <button class="dashboard-button" type="button"
-                        onclick="alert('Irrigation page integration is pending.')">
-                        Manage Irrigation →
-                    </button>
-                </div>
+                
+
+<!-- Irrigation -->
+<div class="dashboard-card">
+    <div class="card-icon">💧</div>
+    <h3>Irrigation</h3>
+    <p>Record irrigation activities and monitor water requirements.</p>
+    <button
+        class="dashboard-button"
+        type="button"
+        onclick="window.location.href='irrigation.html'">
+        Manage Irrigation →
+    </button>
+</div>
+
+
 
                 <!-- Crop Health -->
                 <div class="dashboard-card">
                     <div class="card-icon">🍃</div>
                     <h3>Crop Health</h3>
-                    <p>Monitor crop health and maintain crop health history.</p>
+                    <p>
+                        Assess crop health, identify configured risk factors,
+                        and view recommendations.
+                    </p>
                     <button class="dashboard-button" type="button"
-                        onclick="alert('Crop health page integration is pending.')">
+                        onclick="window.location.href='crop-health.html'">
                         View Crop Health →
                     </button>
                 </div>
@@ -188,7 +194,7 @@
                     <h3>Alerts</h3>
                     <p>View irrigation and environmental threshold alerts.</p>
                     <button class="dashboard-button" type="button"
-                        onclick="alert('Alerts page integration is pending.')">
+                        onclick="window.location.href='alerts.html'">
                         View Alerts →
                     </button>
                 </div>
@@ -339,8 +345,7 @@
                 currentUser.getUserAttributes(function (err, attributes) {
                     if (err || !attributes) {
                         console.error(
-                            "Unable to load farmer attributes:",
-                            err
+                            "Unable to load farmer attributes:", err
                         );
 
                         document.getElementById("farmerEmail").textContent =
@@ -694,9 +699,7 @@
 
         setInterval(loadSensorData, 30000);
         setInterval(loadWeatherData, 300000);
-
     </script>
 
 </body>
 </html>
-```

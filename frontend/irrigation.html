@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Irrigation | Smart Agriculture</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f7f1;
+            color: #243328;
+        }
+
+        header {
+            background: #246b3c;
+            color: white;
+            padding: 22px 6%;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        header p {
+            margin: 0;
+        }
+
+        nav {
+            background: white;
+            padding: 15px 6%;
+            border-bottom: 1px solid #dce5dc;
+        }
+
+        nav a {
+            color: #246b3c;
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 22px;
+        }
+
+        main {
+            width: min(900px, 92%);
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 3px 12px #0000000c;
+        }
+
+        h2 {
+            color: #246b3c;
+            margin-top: 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd7cb;
+            border-radius: 7px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        button {
+            background: #287b3d;
+            color: white;
+            border: none;
+            padding: 13px 18px;
+            border-radius: 7px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1c5c2d;
+        }
+
+        .secondary-button {
+            background: #647568;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #e8f5e9;
+            color: #205b30;
+        }
+
+        .error {
+            display: block;
+            background: #ffebee;
+            color: #a52222;
+        }
+
+        .record {
+            border: 1px solid #dce5dc;
+            border-left: 5px solid #287b3d;
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .record h3 {
+            margin-top: 0;
+        }
+
+        .record p {
+            margin: 7px 0;
+        }
+
+        .muted {
+            color: #68776b;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #68776b;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>💧 Manage Irrigation</h1>
+        <p>Cloud-Based Smart Agriculture Crop Monitoring System</p>
+    </header>
+
+    <nav>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="crop-growth.html">Crop Growth</a>
+        <a href="crop-health.html">Crop Health</a>
+        <a href="alerts.html">Irrigation Alerts</a>
+    </nav>
+
+    <main>
+        <section class="card">
+            <h2>Record Irrigation Activity</h2>
+            <p class="muted">
+                Record when a crop was watered, the amount of water used,
+                and the irrigation method.
+            </p>
+
+            <form id="irrigationForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="farmId">Farm ID *</label>
+                        <input id="farmId" required
+                               placeholder="Enter registered farm ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fieldId">Field ID *</label>
+                        <input id="fieldId" required
+                               placeholder="Enter registered field ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cropId">Crop ID *</label>
+                        <input id="cropId" required
+                               placeholder="Enter registered crop ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="irrigationDate">Watering Date *</label>
+                        <input type="date" id="irrigationDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="waterAmount">Water Quantity (litres) *</label>
+                        <input type="number" id="waterAmount" min="0.1"
+                               step="0.1" required placeholder="Example: 250">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="method">Irrigation Method *</label>
+                        <select id="method" required>
+                            <option value="">Select method</option>
+                            <option value="Drip">Drip Irrigation</option>
+                            <option value="Sprinkler">Sprinkler Irrigation</option>
+                            <option value="Surface">Surface Irrigation</option>
+                            <option value="Manual">Manual Watering</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes"
+                                  placeholder="Enter additional observations"></textarea>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button type="submit">Save Irrigation Record</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="formMessage" class="message" role="status"></div>
+        </section>
+
+        <section class="card">
+            <h2>Irrigation History</h2>
+            <p class="muted">
+                Records saved in this browser are displayed below.
+            </p>
+
+            <button type="button" id="refreshButton">
+                Refresh History
+            </button>
+
+            <div id="irrigationHistory">
+                <p class="muted">No records loaded yet.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Smart Agriculture Crop Monitoring System
+    </footer>
+
+    <script>
+        const STORAGE_KEY = "smartAgricultureIrrigationRecords";
+
+        const form = document.getElementById("irrigationForm");
+        const message = document.getElementById("formMessage");
+        const historyContainer =
+            document.getElementById("irrigationHistory");
+
+        // Use the local date without a UTC date shift.
+        const today = new Date();
+        const localDate =
+            today.getFullYear() + "-" +
+            String(today.getMonth() + 1).padStart(2, "0") + "-" +
+            String(today.getDate()).padStart(2, "0");
+
+        document.getElementById("irrigationDate").value = localDate;
+
+        function getRecords() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                const records = stored ? JSON.parse(stored) : [];
+                return Array.isArray(records) ? records : [];
+            } catch (error) {
+                console.error("Unable to read irrigation records:", error);
+                return [];
+            }
+        }
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = "message " + type;
+        }
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const waterAmount =
+                Number(document.getElementById("waterAmount").value);
+
+            if (!Number.isFinite(waterAmount) || waterAmount <= 0) {
+                showMessage("Enter a water quantity greater than zero.", "error");
+                return;
+            }
+
+            const record = {
+                irrigationId: "IRR-" + crypto.randomUUID(),
+                farmId: document.getElementById("farmId").value.trim(),
+                fieldId: document.getElementById("fieldId").value.trim(),
+                cropId: document.getElementById("cropId").value.trim(),
+                irrigationDate:
+                    document.getElementById("irrigationDate").value,
+                waterAmountLitres: waterAmount,
+                method: document.getElementById("method").value,
+                notes: document.getElementById("notes").value.trim(),
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const records = getRecords();
+                records.unshift(record);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+
+                showMessage(
+                    "Irrigation record saved in this browser successfully.",
+                    "success"
+                );
+
+                form.reset();
+                document.getElementById("irrigationDate").value = localDate;
+                renderHistory();
+            } catch (error) {
+                console.error("Unable to save irrigation record:", error);
+                showMessage(
+                    "Could not save the record in this browser.",
+                    "error"
+                );
+            }
+        });
+
+        function addText(parent, tag, text, boldLabel) {
+            const element = document.createElement(tag);
+
+            if (boldLabel) {
+                const label = document.createElement("strong");
+                label.textContent = boldLabel + ": ";
+                element.appendChild(label);
+                element.appendChild(document.createTextNode(String(text)));
+            } else {
+                element.textContent = String(text);
+            }
+
+            parent.appendChild(element);
+        }
+
+        function renderHistory() {
+            const records = getRecords();
+            historyContainer.replaceChildren();
+
+            if (records.length === 0) {
+                const empty = document.createElement("p");
+                empty.className = "muted";
+                empty.textContent = "No irrigation activities recorded yet.";
+                historyContainer.appendChild(empty);
+                return;
+            }
+
+            records.forEach(function (record) {
+                const card = document.createElement("article");
+                card.className = "record";
+
+                addText(card, "h3", "Irrigation Activity");
+
+                addText(card, "p", record.irrigationId, "Record ID");
+                addText(card, "p", record.farmId, "Farm ID");
+                addText(card, "p", record.fieldId, "Field ID");
+                addText(card, "p", record.cropId, "Crop ID");
+                addText(card, "p", record.irrigationDate, "Watering date");
+                addText(
+                    card, "p",
+                    record.waterAmountLitres + " litres",
+                    "Water quantity"
+                );
+                addText(card, "p", record.method, "Method");
+
+                if (record.notes) {
+                    addText(card, "p", record.notes, "Notes");
+                }
+
+                historyContainer.appendChild(card);
+            });
+        }
+
+        document.getElementById("refreshButton")
+            .addEventListener("click", renderHistory);
+
+        renderHistory();
+    </script>
+</body>
+</html>
