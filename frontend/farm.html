@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Register Farm - Smart Agriculture</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <div class="logo">
+        🌱 Smart Agriculture
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="index.html">
+            Home
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<main class="auth-container">
+
+    <div class="auth-card">
+
+        <h1>
+            Register Your Farm
+        </h1>
+
+
+        <p class="auth-description">
+
+            Enter the details of your farm.
+
+        </p>
+
+
+        <form id="farmForm">
+
+
+            <div class="form-group">
+
+                <label for="farmName">
+                    Farm Name
+                </label>
+
+                <input
+                    type="text"
+                    id="farmName"
+                    placeholder="Enter farm name"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="location">
+                    Farm Location
+                </label>
+
+                <input
+                    type="text"
+                    id="location"
+                    placeholder="Enter farm location"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="area">
+                    Farm Area
+                </label>
+
+                <input
+                    type="text"
+                    id="area"
+                    placeholder="Example: 5 acres"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="soilType">
+                    Soil Type
+                </label>
+
+                <select
+                    id="soilType"
+                    required
+                >
+
+                    <option value="">
+                        Select soil type
+                    </option>
+
+                    <option value="Loamy">
+                        Loamy
+                    </option>
+
+                    <option value="Clay">
+                        Clay
+                    </option>
+
+                    <option value="Sandy">
+                        Sandy
+                    </option>
+
+                    <option value="Black Soil">
+                        Black Soil
+                    </option>
+
+                    <option value="Red Soil">
+                        Red Soil
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="auth-button"
+                id="farmButton"
+            >
+
+                Register Farm
+
+            </button>
+
+
+            <p id="farmMessage"></p>
+
+
+        </form>
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <p>
+        © 2026 Smart Agriculture Crop Monitoring System
+    </p>
+
+</footer>
+
+
+
+<script>
+
+const form =
+    document.getElementById("farmForm");
+
+const message =
+    document.getElementById("farmMessage");
+
+const button =
+    document.getElementById("farmButton");
+
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const farmerId =
+            sessionStorage.getItem("farmerId");
+
+
+        if (!farmerId) {
+
+            message.textContent =
+                "Farmer session not found. Please login again.";
+
+            message.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        const farmName =
+            document
+                .getElementById("farmName")
+                .value
+                .trim();
+
+
+        const location =
+            document
+                .getElementById("location")
+                .value
+                .trim();
+
+
+        const area =
+            document
+                .getElementById("area")
+                .value
+                .trim();
+
+
+        const soilType =
+            document
+                .getElementById("soilType")
+                .value;
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Registering Farm...";
+
+
+        message.textContent =
+            "Saving farm information to AWS...";
+
+
+        try {
+
+            const response =
+                await fetch(
+
+                    "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/farms",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            farmerId:
+                                farmerId,
+
+                            farmName:
+                                farmName,
+
+                            location:
+                                location,
+
+                            area:
+                                area,
+
+                            soilType:
+                                soilType
+
+                        })
+
+                    }
+
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Farm API response:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Farm registration failed."
+                );
+
+            }
+
+
+            // Store generated farm ID
+
+            sessionStorage.setItem(
+                "farmId",
+                data.farm.farmId
+            );
+
+
+            message.textContent =
+                "Farm registered successfully!";
+
+            message.className =
+                "success-message";
+
+
+            form.reset();
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Farm";
+
+
+        } catch (error) {
+
+            console.error(
+                "Farm registration error:",
+                error
+            );
+
+
+            message.textContent =
+                error.message ||
+                "Unable to register farm.";
+
+            message.className =
+                "error-message";
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Farm";
+
+        }
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

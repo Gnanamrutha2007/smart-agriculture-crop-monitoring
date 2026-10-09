@@ -1,6 +1,6 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,6 @@
 <body>
 
     <header class="navbar">
-
         <div class="logo">
             🌱 Smart Agriculture
         </div>
@@ -22,12 +21,9 @@
             <a href="index.html">Home</a>
             <a href="register.html">Register</a>
         </nav>
-
     </header>
 
-
     <main class="auth-container">
-
         <div class="auth-card">
 
             <h1>Farmer Login</h1>
@@ -36,123 +32,181 @@
                 Login to access your Smart Agriculture dashboard.
             </p>
 
-
             <form id="loginForm">
 
                 <div class="form-group">
-
-                    <label for="email">
-                        Email Address
-                    </label>
+                    <label for="email">Email Address</label>
 
                     <input
                         type="email"
                         id="email"
                         name="email"
                         placeholder="Enter your email"
+                        autocomplete="username"
                         required
                     >
-
                 </div>
 
-
                 <div class="form-group">
-
-                    <label for="password">
-                        Password
-                    </label>
+                    <label for="password">Password</label>
 
                     <input
                         type="password"
                         id="password"
                         name="password"
                         placeholder="Enter your password"
+                        autocomplete="current-password"
                         required
                     >
-
                 </div>
-
 
                 <button
                     type="submit"
                     class="auth-button"
+                    id="loginButton"
                 >
                     Login
                 </button>
 
-
-                <p id="loginMessage"></p>
+                <p id="loginMessage" role="status" aria-live="polite"></p>
 
             </form>
 
-
             <p class="login-link">
-
                 New farmer?
-
-                <a href="register.html">
-                    Create an account
-                </a>
-
+                <a href="register.html">Create an account</a>
             </p>
 
         </div>
-
     </main>
 
-
     <footer>
-
-        <p>
-            © 2026 Smart Agriculture Crop Monitoring System
-        </p>
-
+        <p>© 2026 Smart Agriculture Crop Monitoring System</p>
     </footer>
 
+    <!-- Amazon Cognito JavaScript SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
 
     <script>
+        // ==========================================
+        // AMAZON COGNITO CONFIGURATION
+        // ==========================================
 
-        const loginForm =
-            document.getElementById("loginForm");
+        const poolData = {
+            UserPoolId: "ap-south-1_QZT7vDGVW",
+            ClientId: "470o9e2j7gd3888smk5cqqba9i"
+        };
 
-        const loginMessage =
-            document.getElementById("loginMessage");
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
+        // ==========================================
+        // FORM ELEMENTS
+        // ==========================================
 
-        loginForm.addEventListener("submit", function(event) {
+        const form = document.getElementById("loginForm");
+        const message = document.getElementById("loginMessage");
+        const loginButton = document.getElementById("loginButton");
 
+        // ==========================================
+        // LOGIN
+        // ==========================================
+
+        form.addEventListener("submit", function(event) {
             event.preventDefault();
 
+            const email = document
+                .getElementById("email")
+                .value
+                .trim();
 
-            const email =
-                document.getElementById("email").value;
+            const password = document
+                .getElementById("password")
+                .value;
 
-            const password =
-                document.getElementById("password").value;
+            loginButton.disabled = true;
+            loginButton.textContent = "Logging in...";
 
+            message.textContent = "Authenticating with Amazon Cognito...";
+            message.className = "";
 
-            if (!email || !password) {
+            const cognitoUser =
+                new AmazonCognitoIdentity.CognitoUser({
+                    Username: email,
+                    Pool: userPool
+                });
 
-                loginMessage.textContent =
-                    "Please enter your email and password.";
+            const authenticationDetails =
+                new AmazonCognitoIdentity.AuthenticationDetails({
+                    Username: email,
+                    Password: password
+                });
 
-                loginMessage.className =
-                    "error-message";
+            cognitoUser.authenticateUser(
+                authenticationDetails,
+                {
+                    // ==================================
+                    // LOGIN SUCCESS
+                    // ==================================
 
-                return;
-            }
+                    onSuccess: function(result) {
+                        console.log("Cognito login successful.");
 
+                        try {
+                            const idToken = result.getIdToken();
+                            const farmerId = idToken.payload.sub;
 
-            loginMessage.textContent =
-                "Login form submitted. Amazon Cognito will be connected in the next stage.";
+                            if (!farmerId) {
+                                throw new Error(
+                                    "Unable to obtain farmer ID from Cognito."
+                                );
+                            }
 
-            loginMessage.className =
-                "success-message";
+                            // Save authenticated farmer information.
+                            sessionStorage.setItem("farmerId", farmerId);
+                            sessionStorage.setItem("registrationEmail", email);
 
+                            message.textContent =
+                                "Login successful! Opening dashboard...";
+
+                            message.className = "success-message";
+
+                            // Open the dashboard.
+                            window.location.href = "dashboard.html";
+
+                        } catch (error) {
+                            console.error("Login processing error:", error);
+
+                            loginButton.disabled = false;
+                            loginButton.textContent = "Login";
+
+                            message.textContent =
+                                error.message || "Unable to complete login.";
+
+                            message.className = "error-message";
+                        }
+                    },
+
+                    // ==================================
+                    // LOGIN FAILURE
+                    // ==================================
+
+                    onFailure: function(error) {
+                        console.error("Cognito login error:", error);
+
+                        loginButton.disabled = false;
+                        loginButton.textContent = "Login";
+
+                        message.textContent =
+                            error.message ||
+                            "Login failed. Please check your email and password.";
+
+                        message.className = "error-message";
+                    }
+                }
+            );
         });
-
     </script>
 
 </body>
-
 </html>

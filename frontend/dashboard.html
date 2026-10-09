@@ -1,0 +1,684 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Farmer Dashboard - Smart Agriculture</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Chart.js for historical sensor readings -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Navigation -->
+    <header class="dashboard-navbar">
+        <div class="dashboard-logo">
+            <span class="logo-icon">🌱</span>
+            <span>Smart Agriculture</span>
+        </div>
+
+        <nav class="dashboard-nav">
+            <a href="index.html">Home</a>
+            <button id="logoutButton" class="logout-button" type="button">
+                Logout
+            </button>
+        </nav>
+    </header>
+
+    <main class="dashboard-main">
+
+        <!-- Welcome section -->
+        <section class="welcome-section">
+            <div>
+                <p class="dashboard-label">FARMER DASHBOARD</p>
+                <h1>Welcome back! 🌱</h1>
+                <p class="welcome-text">
+                    Monitor your farms, crops and environmental
+                    conditions from one place.
+                </p>
+            </div>
+
+            <div class="farmer-account">
+                <div class="account-icon">👨‍🌾</div>
+                <div>
+                    <span class="account-label">Logged in as</span>
+                    <strong id="farmerEmail">Loading...</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <div class="summary-icon farm-icon">🌾</div>
+                <div>
+                    <span>Total Farms</span>
+                    <strong id="totalFarms">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon field-icon">📍</div>
+                <div>
+                    <span>Total Fields</span>
+                    <strong id="totalFields">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon crop-icon">🌱</div>
+                <div>
+                    <span>Active Crops</span>
+                    <strong id="totalCrops">0</strong>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <div class="summary-icon alert-icon">🚨</div>
+                <div>
+                    <span>Active Alerts</span>
+                    <strong id="totalAlerts">0</strong>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Farm management -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <div>
+                    <p class="section-label">FARM MANAGEMENT</p>
+                    <h2>Manage Your Agriculture</h2>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🌾</div>
+                    <h3>Farms</h3>
+                    <p>Register and manage your farms and agricultural locations.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="window.location.href='farm.html'">
+                        Manage Farms →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">📍</div>
+                    <h3>Fields</h3>
+                    <p>Manage individual fields associated with your farms.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="window.location.href='field.html'">
+                        Manage Fields →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Crops</h3>
+                    <p>Register crops and record planting dates and crop types.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="window.location.href='crop.html'">
+                        Manage Crops →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🌡️</div>
+                    <h3>Environment</h3>
+                    <p>Monitor temperature, humidity and soil conditions.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="document.getElementById('environmentSection').scrollIntoView({behavior:'smooth'})">
+                        View Environment →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">💧</div>
+                    <h3>Irrigation</h3>
+                    <p>Record irrigation activities and monitor water requirements.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="alert('Irrigation page integration is pending.')">
+                        Manage Irrigation →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">🌿</div>
+                    <h3>Crop Health</h3>
+                    <p>Monitor crop growth and maintain crop health history.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="alert('Crop health page integration is pending.')">
+                        View Crop Health →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon alert-card-icon">🚨</div>
+                    <h3>Alerts</h3>
+                    <p>View irrigation and environmental threshold alerts.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="alert('Alerts page integration is pending.')">
+                        View Alerts →
+                    </button>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-icon">📊</div>
+                    <h3>Reports</h3>
+                    <p>View field-wise, crop-wise and historical reports.</p>
+                    <button class="dashboard-button" type="button"
+                        onclick="document.getElementById('historySection').scrollIntoView({behavior:'smooth'})">
+                        View Reports →
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Current environmental monitoring -->
+        <section class="dashboard-section" id="environmentSection">
+
+            <div class="section-heading">
+                <div>
+                    <p class="section-label">FARM MONITORING</p>
+                    <h2>Current Environment</h2>
+                </div>
+            </div>
+
+            <div class="environment-grid">
+
+                <div class="environment-card">
+                    <div class="environment-icon">🌡️</div>
+                    <div>
+                        <span>Temperature</span>
+                        <strong id="temperatureValue">--</strong>
+                        <small id="temperatureStatus">Loading sensor data...</small>
+                    </div>
+                </div>
+
+                <div class="environment-card">
+                    <div class="environment-icon">💧</div>
+                    <div>
+                        <span>Humidity</span>
+                        <strong id="humidityValue">--</strong>
+                        <small id="humidityStatus">Loading sensor data...</small>
+                    </div>
+                </div>
+
+                <div class="environment-card">
+                    <div class="environment-icon">🌱</div>
+                    <div>
+                        <span>Soil Moisture</span>
+                        <strong id="soilMoistureValue">--</strong>
+                        <small id="soilMoistureStatus">Loading sensor data...</small>
+                    </div>
+                </div>
+
+                <div class="environment-card">
+                    <div class="environment-icon">☁️</div>
+                    <div>
+                        <span>Weather Temperature</span>
+                        <strong id="weatherValue">--</strong>
+                        <small id="weatherStatus">Loading weather data...</small>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Historical sensor chart -->
+        <section class="dashboard-section" id="historySection">
+
+            <div class="section-heading">
+                <div>
+                    <p class="section-label">HISTORICAL ANALYSIS</p>
+                    <h2>Environmental Trends</h2>
+                    <p>Recent sensor readings for your farm</p>
+                </div>
+
+                <button class="dashboard-button" id="refreshHistoryButton"
+                    type="button">
+                    Refresh Chart
+                </button>
+            </div>
+
+            <div class="dashboard-card" style="padding: 24px;">
+                <p id="historyMessage" role="status">
+                    Loading historical readings...
+                </p>
+
+                <div style="position: relative; height: 350px; width: 100%;">
+                    <canvas id="sensorHistoryChart"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <p>© 2026 Smart Agriculture Crop Monitoring System</p>
+        <p>Cloud-Based Smart Agriculture</p>
+    </footer>
+
+    <!-- Amazon Cognito SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION
+        // ==========================================
+
+        const poolData = {
+            UserPoolId: "ap-south-1_QZT7vDGVW",
+            ClientId: "470o9e2j7gd3888smk5cqqba9i"
+        };
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+        const SENSOR_API_URL =
+            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/sensor-data";
+
+        const WEATHER_API_URL =
+            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/weather";
+
+        // ==========================================
+        // AUTHENTICATION AND FARMER EMAIL
+        // ==========================================
+
+        const currentUser = userPool.getCurrentUser();
+
+        if (!currentUser) {
+            window.location.href = "login.html";
+        } else {
+            currentUser.getSession(function (error, session) {
+                if (error || !session || !session.isValid()) {
+                    window.location.href = "login.html";
+                    return;
+                }
+
+                const idToken = session.getIdToken();
+                const farmerId = idToken.payload.sub;
+
+                sessionStorage.setItem("farmerId", farmerId);
+
+                currentUser.getUserAttributes(function (err, attributes) {
+                    if (err || !attributes) {
+                        console.error(
+                            "Unable to load farmer attributes:",
+                            err
+                        );
+
+                        document.getElementById("farmerEmail").textContent =
+                            "Email unavailable";
+                        return;
+                    }
+
+                    let email = "";
+
+                    attributes.forEach(function (attribute) {
+                        if (attribute.getName() === "email") {
+                            email = attribute.getValue();
+                        }
+                    });
+
+                    document.getElementById("farmerEmail").textContent =
+                        email || "Email unavailable";
+                });
+            });
+        }
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+
+        document.getElementById("logoutButton")
+            .addEventListener("click", function () {
+                const user = userPool.getCurrentUser();
+
+                if (user) {
+                    user.signOut();
+                }
+
+                sessionStorage.removeItem("farmerId");
+                sessionStorage.removeItem("farmId");
+                sessionStorage.removeItem("fieldId");
+                sessionStorage.removeItem("cropId");
+
+                window.location.href = "login.html";
+            });
+
+        // ==========================================
+        // LOAD SENSOR DATA
+        // ==========================================
+
+        async function loadSensorData() {
+            const temperatureValue =
+                document.getElementById("temperatureValue");
+
+            const humidityValue =
+                document.getElementById("humidityValue");
+
+            const soilMoistureValue =
+                document.getElementById("soilMoistureValue");
+
+            const temperatureStatus =
+                document.getElementById("temperatureStatus");
+
+            const humidityStatus =
+                document.getElementById("humidityStatus");
+
+            const soilMoistureStatus =
+                document.getElementById("soilMoistureStatus");
+
+            try {
+                const response = await fetch(SENSOR_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Sensor API returned HTTP " + response.status
+                    );
+                }
+
+                const result = await response.json();
+
+                if (!Array.isArray(result.sensorData) ||
+                    result.sensorData.length === 0) {
+                    throw new Error("No sensor readings are available.");
+                }
+
+                // Select the newest reading using its timestamp.
+                const readings = result.sensorData
+                    .filter(item => item.timestamp)
+                    .sort((a, b) =>
+                        new Date(b.timestamp) - new Date(a.timestamp)
+                    );
+
+                if (readings.length === 0) {
+                    throw new Error("No timestamped sensor readings found.");
+                }
+
+                const latest = readings[0];
+
+                temperatureValue.textContent =
+                    latest.temperature != null
+                        ? Number(latest.temperature) + " °C"
+                        : "--";
+
+                humidityValue.textContent =
+                    latest.humidity != null
+                        ? Number(latest.humidity) + " %"
+                        : "--";
+
+                soilMoistureValue.textContent =
+                    latest.soilMoisture != null
+                        ? Number(latest.soilMoisture) + " %"
+                        : "--";
+
+                const timestamp =
+                    new Date(latest.timestamp).toLocaleString();
+
+                temperatureStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+                humidityStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+                soilMoistureStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+            } catch (error) {
+                console.error("Unable to load sensor data:", error);
+
+                temperatureStatus.textContent =
+                    "Unable to load sensor data";
+
+                humidityStatus.textContent =
+                    "Unable to load sensor data";
+
+                soilMoistureStatus.textContent =
+                    "Unable to load sensor data";
+            }
+        }
+
+        // ==========================================
+        // LOAD WEATHER DATA
+        // ==========================================
+
+        async function loadWeatherData() {
+            const weatherValue =
+                document.getElementById("weatherValue");
+
+            const weatherStatus =
+                document.getElementById("weatherStatus");
+
+            try {
+                const response = await fetch(WEATHER_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Weather API returned HTTP " + response.status
+                    );
+                }
+
+                const result = await response.json();
+                const weather = result.weather;
+
+                if (!weather || weather.temperature == null) {
+                    throw new Error(
+                        result.message ||
+                        "Weather information is unavailable."
+                    );
+                }
+
+                weatherValue.textContent =
+                    Number(weather.temperature) + " °C";
+
+                const details = [];
+
+                if (weather.humidity != null) {
+                    details.push("Humidity " + weather.humidity + "%");
+                }
+
+                if (weather.windSpeed != null) {
+                    details.push("Wind " + weather.windSpeed + " km/h");
+                }
+
+                if (weather.precipitation != null) {
+                    details.push("Rain " + weather.precipitation + " mm");
+                }
+
+                if (weather.timestamp) {
+                    details.push("Updated " + weather.timestamp);
+                } else if (weather.weatherTimestamp) {
+                    details.push("Updated " + weather.weatherTimestamp);
+                }
+
+                weatherStatus.textContent =
+                    details.length ? details.join(" · ") : "Weather loaded";
+
+            } catch (error) {
+                console.error("Unable to load weather data:", error);
+
+                weatherValue.textContent = "--";
+                weatherStatus.textContent = "Unable to load weather";
+            }
+        }
+
+        // ==========================================
+        // HISTORICAL SENSOR CHART
+        // ==========================================
+
+        let sensorHistoryChart = null;
+
+        async function loadSensorHistory() {
+            const message =
+                document.getElementById("historyMessage");
+
+            const canvas =
+                document.getElementById("sensorHistoryChart");
+
+            message.textContent = "Loading historical readings...";
+
+            try {
+                const response = await fetch(SENSOR_API_URL);
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Sensor API returned HTTP " + response.status
+                    );
+                }
+
+                const result = await response.json();
+
+                if (!Array.isArray(result.sensorData) ||
+                    result.sensorData.length === 0) {
+                    message.textContent =
+                        "No historical sensor readings found.";
+                    return;
+                }
+
+                // Keep complete readings and sort from oldest to newest.
+                const readings = result.sensorData
+                    .filter(item =>
+                        item.timestamp &&
+                        item.temperature != null &&
+                        item.humidity != null &&
+                        item.soilMoisture != null
+                    )
+                    .sort((a, b) =>
+                        new Date(a.timestamp) - new Date(b.timestamp)
+                    );
+
+                if (readings.length === 0) {
+                    message.textContent =
+                        "No complete sensor readings are available.";
+                    return;
+                }
+
+                const labels = readings.map(item =>
+                    new Date(item.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    })
+                );
+
+                const chartData = {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: "Temperature (°C)",
+                            data: readings.map(item =>
+                                Number(item.temperature)
+                            ),
+                            tension: 0.25
+                        },
+                        {
+                            label: "Humidity (%)",
+                            data: readings.map(item =>
+                                Number(item.humidity)
+                            ),
+                            tension: 0.25
+                        },
+                        {
+                            label: "Soil Moisture (%)",
+                            data: readings.map(item =>
+                                Number(item.soilMoisture)
+                            ),
+                            tension: 0.25
+                        }
+                    ]
+                };
+
+                if (sensorHistoryChart) {
+                    sensorHistoryChart.destroy();
+                }
+
+                const context = canvas.getContext("2d");
+
+                sensorHistoryChart = new Chart(context, {
+                    type: "line",
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+
+                        interaction: {
+                            intersect: false,
+                            mode: "index"
+                        },
+
+                        plugins: {
+                            legend: {
+                                position: "bottom"
+                            },
+                            title: {
+                                display: true,
+                                text: "Recent Environmental Sensor History"
+                            }
+                        },
+
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: "Reading Time"
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: "Measured Value"
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                message.textContent =
+                    "Showing " + readings.length +
+                    " historical readings. Data is displayed from oldest to newest.";
+
+            } catch (error) {
+                console.error("Historical chart error:", error);
+
+                message.textContent =
+                    "Unable to load historical readings. Check the sensor API, network connection, and browser console.";
+            }
+        }
+
+        document.getElementById("refreshHistoryButton")
+            .addEventListener("click", loadSensorHistory);
+
+        // ==========================================
+        // INITIAL LOAD AND AUTOMATIC REFRESH
+        // ==========================================
+
+        loadSensorData();
+        loadWeatherData();
+        loadSensorHistory();
+
+        // Refresh sensor readings every 30 seconds.
+        setInterval(loadSensorData, 30000);
+
+        // Refresh weather data every 5 minutes.
+        setInterval(loadWeatherData, 300000);
+
+    </script>
+
+</body>
+</html>
+```

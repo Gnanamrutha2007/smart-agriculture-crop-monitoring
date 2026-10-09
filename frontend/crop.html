@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Register Crop - Smart Agriculture</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+    <div class="logo">
+        🌱 Smart Agriculture
+    </div>
+
+    <nav>
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="index.html">
+            Home
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<main class="auth-container">
+
+    <div class="auth-card">
+
+        <h1>
+            Register Crop
+        </h1>
+
+
+        <p class="auth-description">
+
+            Enter the details of the crop planted in your field.
+
+        </p>
+
+
+        <form id="cropForm">
+
+
+            <div class="form-group">
+
+                <label for="cropName">
+                    Crop Name
+                </label>
+
+                <input
+                    type="text"
+                    id="cropName"
+                    placeholder="Example: Tomato"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="cropType">
+                    Crop Type
+                </label>
+
+                <select
+                    id="cropType"
+                    required
+                >
+
+                    <option value="">
+                        Select crop type
+                    </option>
+
+                    <option value="Vegetable">
+                        Vegetable
+                    </option>
+
+                    <option value="Cereal">
+                        Cereal
+                    </option>
+
+                    <option value="Fruit">
+                        Fruit
+                    </option>
+
+                    <option value="Pulse">
+                        Pulse
+                    </option>
+
+                    <option value="Oilseed">
+                        Oilseed
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="fieldId">
+                    Field ID
+                </label>
+
+                <input
+                    type="text"
+                    id="fieldId"
+                    placeholder="Example: FIELD-API-001"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="plantingDate">
+                    Planting Date
+                </label>
+
+                <input
+                    type="date"
+                    id="plantingDate"
+                    required
+                >
+
+            </div>
+
+
+
+            <div class="form-group">
+
+                <label for="expectedHarvestDate">
+                    Expected Harvest Date
+                </label>
+
+                <input
+                    type="date"
+                    id="expectedHarvestDate"
+                    required
+                >
+
+            </div>
+
+
+
+            <button
+                type="submit"
+                class="auth-button"
+                id="cropButton"
+            >
+
+                Register Crop
+
+            </button>
+
+
+            <p id="cropMessage"></p>
+
+
+        </form>
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    <p>
+        © 2026 Smart Agriculture Crop Monitoring System
+    </p>
+
+</footer>
+
+
+
+<script>
+
+const form =
+    document.getElementById("cropForm");
+
+const message =
+    document.getElementById("cropMessage");
+
+const button =
+    document.getElementById("cropButton");
+
+
+form.addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        /*
+         * Get the logged-in farmer ID.
+         */
+
+        const farmerId =
+            sessionStorage.getItem("farmerId");
+
+
+        if (!farmerId) {
+
+            message.textContent =
+                "Farmer session not found. Please login again.";
+
+            message.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        /*
+         * Get the registered farm ID.
+         */
+
+        const farmId =
+            sessionStorage.getItem("farmId");
+
+
+        if (!farmId) {
+
+            message.textContent =
+                "Farm information not found. Please register a farm first.";
+
+            message.className =
+                "error-message";
+
+            return;
+
+        }
+
+
+        /*
+         * Get the selected field ID.
+         */
+
+        const fieldId =
+            document
+                .getElementById("fieldId")
+                .value
+                .trim();
+
+
+        const cropName =
+            document
+                .getElementById("cropName")
+                .value
+                .trim();
+
+
+        const cropType =
+            document
+                .getElementById("cropType")
+                .value;
+
+
+        const plantingDate =
+            document
+                .getElementById("plantingDate")
+                .value;
+
+
+        const expectedHarvestDate =
+            document
+                .getElementById("expectedHarvestDate")
+                .value;
+
+
+        /*
+         * Generate a unique crop ID.
+         */
+
+        const cropId =
+            "CROP-" + Date.now();
+
+
+        button.disabled = true;
+
+        button.textContent =
+            "Registering Crop...";
+
+
+        message.textContent =
+            "Saving crop information to AWS...";
+
+
+        try {
+
+            const response =
+                await fetch(
+
+                    "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crops",
+
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            cropId:
+                                cropId,
+
+                            farmerId:
+                                farmerId,
+
+                            farmId:
+                                farmId,
+
+                            fieldId:
+                                fieldId,
+
+                            cropName:
+                                cropName,
+
+                            cropType:
+                                cropType,
+
+                            plantingDate:
+                                plantingDate,
+
+                            expectedHarvestDate:
+                                expectedHarvestDate
+
+                        })
+
+                    }
+
+                );
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Crop API response:",
+                data
+            );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Crop registration failed."
+                );
+
+            }
+
+
+            /*
+             * Store the generated crop ID.
+             */
+
+            if (
+                data.crop &&
+                data.crop.cropId
+            ) {
+
+                sessionStorage.setItem(
+                    "cropId",
+                    data.crop.cropId
+                );
+
+            }
+
+
+            message.textContent =
+                "Crop registered successfully!";
+
+            message.className =
+                "success-message";
+
+
+            form.reset();
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Crop";
+
+
+        } catch (error) {
+
+            console.error(
+                "Crop registration error:",
+                error
+            );
+
+
+            message.textContent =
+                error.message ||
+                "Unable to register crop.";
+
+            message.className =
+                "error-message";
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Register Crop";
+
+        }
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

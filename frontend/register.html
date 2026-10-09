@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Farmer Registration - Smart Agriculture</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
 
+
 <body>
+
+
+    <!-- ==========================================
+         NAVIGATION BAR
+         ========================================== -->
 
     <header class="navbar">
 
@@ -18,26 +34,52 @@
         </div>
 
         <nav>
-            <a href="index.html">Home</a>
-            <a href="login.html">Login</a>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
         </nav>
 
     </header>
 
 
+
+    <!-- ==========================================
+         REGISTRATION SECTION
+         ========================================== -->
+
     <main class="auth-container">
 
         <div class="auth-card">
 
-            <h1>Farmer Registration</h1>
+
+            <h1>
+                Farmer Registration
+            </h1>
+
 
             <p class="auth-description">
-                Create your farmer account to manage your farms,
-                fields and crops.
+
+                Create your farmer account to manage
+                your farms, fields and crops.
+
             </p>
 
 
+
+            <!-- ======================================
+                 REGISTRATION FORM
+                 ====================================== -->
+
             <form id="registrationForm">
+
+
+                <!-- Full Name -->
 
                 <div class="form-group">
 
@@ -50,11 +92,15 @@
                         id="fullName"
                         name="fullName"
                         placeholder="Enter your full name"
+                        autocomplete="name"
                         required
                     >
 
                 </div>
 
+
+
+                <!-- Email -->
 
                 <div class="form-group">
 
@@ -67,11 +113,15 @@
                         id="email"
                         name="email"
                         placeholder="Enter your email"
+                        autocomplete="email"
                         required
                     >
 
                 </div>
 
+
+
+                <!-- Phone -->
 
                 <div class="form-group">
 
@@ -84,11 +134,15 @@
                         id="phone"
                         name="phone"
                         placeholder="Enter your phone number"
+                        autocomplete="tel"
                         required
                     >
 
                 </div>
 
+
+
+                <!-- Address -->
 
                 <div class="form-group">
 
@@ -107,6 +161,9 @@
                 </div>
 
 
+
+                <!-- Password -->
+
                 <div class="form-group">
 
                     <label for="password">
@@ -118,11 +175,15 @@
                         id="password"
                         name="password"
                         placeholder="Create a password"
+                        autocomplete="new-password"
                         required
                     >
 
                 </div>
 
+
+
+                <!-- Confirm Password -->
 
                 <div class="form-group">
 
@@ -135,24 +196,36 @@
                         id="confirmPassword"
                         name="confirmPassword"
                         placeholder="Confirm your password"
+                        autocomplete="new-password"
                         required
                     >
 
                 </div>
 
 
+
+                <!-- Register Button -->
+
                 <button
                     type="submit"
                     class="auth-button"
+                    id="registerButton"
                 >
                     Create Farmer Account
                 </button>
 
 
+
+                <!-- Registration Message -->
+
                 <p id="registrationMessage"></p>
+
 
             </form>
 
+
+
+            <!-- Login Link -->
 
             <p class="login-link">
 
@@ -164,10 +237,16 @@
 
             </p>
 
+
         </div>
 
     </main>
 
+
+
+    <!-- ==========================================
+         FOOTER
+         ========================================== -->
 
     <footer>
 
@@ -178,47 +257,365 @@
     </footer>
 
 
+
+    <!-- ==========================================
+         AMAZON COGNITO JAVASCRIPT SDK
+         ========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
+
+
+
+    <!-- ==========================================
+         COGNITO REGISTRATION SCRIPT
+         ========================================== -->
+
     <script>
 
+
+        // ==========================================
+        // AMAZON COGNITO CONFIGURATION
+        // ==========================================
+
+        const poolData = {
+
+            UserPoolId:
+                "ap-south-1_QZT7vDGVW",
+
+            ClientId:
+                "470o9e2j7gd3888smk5cqqba9i"
+
+        };
+
+
+        // Create Cognito User Pool object
+
+        const userPool =
+            new AmazonCognitoIdentity.CognitoUserPool(
+                poolData
+            );
+
+
+
+        // ==========================================
+        // GET FORM ELEMENTS
+        // ==========================================
+
         const form =
-            document.getElementById("registrationForm");
+            document.getElementById(
+                "registrationForm"
+            );
+
 
         const message =
-            document.getElementById("registrationMessage");
+            document.getElementById(
+                "registrationMessage"
+            );
 
 
-        form.addEventListener("submit", function(event) {
-
-            event.preventDefault();
-
-
-            const password =
-                document.getElementById("password").value;
-
-            const confirmPassword =
-                document.getElementById("confirmPassword").value;
+        const registerButton =
+            document.getElementById(
+                "registerButton"
+            );
 
 
-            if (password !== confirmPassword) {
+
+        // ==========================================
+        // REGISTRATION FORM SUBMISSION
+        // ==========================================
+
+        form.addEventListener(
+            "submit",
+            function(event) {
+
+
+                // Prevent normal form submission
+
+                event.preventDefault();
+
+
+
+                // ======================================
+                // GET FORM VALUES
+                // ======================================
+
+                const fullName =
+                    document
+                        .getElementById("fullName")
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim()
+                        .toLowerCase();
+
+
+                const phone =
+                    document
+                        .getElementById("phone")
+                        .value
+                        .trim();
+
+
+                const address =
+                    document
+                        .getElementById("address")
+                        .value
+                        .trim();
+
+
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
+
+
+                const confirmPassword =
+                    document
+                        .getElementById("confirmPassword")
+                        .value;
+
+
+
+                // ======================================
+                // VALIDATE PASSWORD
+                // ======================================
+
+                if (
+                    password !==
+                    confirmPassword
+                ) {
+
+                    message.textContent =
+                        "Passwords do not match.";
+
+                    message.className =
+                        "error-message";
+
+                    return;
+
+                }
+
+
+
+                // ======================================
+                // VALIDATE PASSWORD LENGTH
+                // ======================================
+
+                if (password.length < 8) {
+
+                    message.textContent =
+                        "Password must contain at least 8 characters.";
+
+                    message.className =
+                        "error-message";
+
+                    return;
+
+                }
+
+
+
+                // ======================================
+                // DISABLE REGISTER BUTTON
+                // ======================================
+
+                registerButton.disabled =
+                    true;
+
+
+                registerButton.textContent =
+                    "Creating Account...";
+
 
                 message.textContent =
-                    "Passwords do not match.";
+                    "Creating your farmer account...";
 
-                message.className = "error-message";
 
-                return;
+                message.className = "";
+
+
+
+                // ======================================
+                // CREATE COGNITO USER ATTRIBUTES
+                // ======================================
+
+                const attributes = [
+
+                    new AmazonCognitoIdentity.CognitoUserAttribute({
+
+                        Name: "email",
+
+                        Value: email
+
+                    }),
+
+
+                    new AmazonCognitoIdentity.CognitoUserAttribute({
+
+                        Name: "name",
+
+                        Value: fullName
+
+                    })
+
+                ];
+
+
+
+                // ======================================
+                // SIGN UP USER WITH COGNITO
+                // ======================================
+
+                userPool.signUp(
+
+                    email,
+
+                    password,
+
+                    attributes,
+
+                    null,
+
+                    function(
+                        error,
+                        result
+                    ) {
+
+
+                        // Re-enable button
+
+                        registerButton.disabled =
+                            false;
+
+
+                        registerButton.textContent =
+                            "Create Farmer Account";
+
+
+
+                        // ==================================
+                        // HANDLE ERROR
+                        // ==================================
+
+                        if (error) {
+
+                            console.error(
+                                "Cognito registration error:",
+                                error
+                            );
+
+
+                            message.textContent =
+                                error.message ||
+                                "Registration failed. Please try again.";
+
+
+                            message.className =
+                                "error-message";
+
+
+                            return;
+
+                        }
+
+
+
+                        // ==================================
+                        // REGISTRATION SUCCESS
+                        // ==================================
+
+                        console.log(
+                            "Cognito registration successful:",
+                            result
+                        );
+
+
+
+                        // ==================================
+                        // STORE TEMPORARY DATA
+                        // ==================================
+
+                        /*
+                         * These values are temporarily stored
+                         * so confirm.html can identify the
+                         * email account being confirmed.
+                         *
+                         * Later, phone and address will be
+                         * stored properly in DynamoDB.
+                         */
+
+                        sessionStorage.setItem(
+                            "registrationEmail",
+                            email
+                        );
+
+
+                        sessionStorage.setItem(
+                            "registrationPhone",
+                            phone
+                        );
+
+
+                        sessionStorage.setItem(
+                            "registrationAddress",
+                            address
+                        );
+
+
+                        sessionStorage.setItem(
+                            "registrationName",
+                            fullName
+                        );
+
+
+
+                        // ==================================
+                        // SUCCESS MESSAGE
+                        // ==================================
+
+                        message.textContent =
+                            "Account created successfully! Please check your email for the verification code.";
+
+
+                        message.className =
+                            "success-message";
+
+
+
+                        // ==================================
+                        // REDIRECT TO CONFIRMATION PAGE
+                        // ==================================
+
+                        setTimeout(
+
+                            function() {
+
+                                window.location.href =
+                                    "confirm.html";
+
+                            },
+
+                            1500
+
+                        );
+
+                    }
+
+                );
 
             }
 
+        );
 
-            message.textContent =
-                "Registration form submitted successfully. AWS Cognito will be connected in the next stage.";
-
-            message.className = "success-message";
-
-        });
 
     </script>
 
+
 </body>
+
 </html>
