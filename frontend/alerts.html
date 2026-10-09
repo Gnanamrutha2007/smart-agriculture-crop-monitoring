@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irrigation Alerts | Smart Agriculture</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f2;
+            color: #243328;
+        }
+
+        header {
+            background: #246b3c;
+            color: white;
+            padding: 22px 6%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+        header p { margin: 0; }
+
+        main {
+            width: min(1050px, 92%);
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            margin-bottom: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px #0000000d;
+        }
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .metric {
+            background: #edf6ee;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 25px;
+            margin-top: 8px;
+        }
+
+        button {
+            background: #246b3c;
+            color: white;
+            border: 0;
+            padding: 11px 17px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #194e2b; }
+
+        .alert {
+            border: 1px solid #e4c7a3;
+            border-left: 5px solid #d97706;
+            padding: 17px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .alert h3 { margin-top: 0; }
+        .muted { color: #637065; }
+        .error { color: #b42318; }
+        .success { color: #246b3c; }
+
+        .alert p { overflow-wrap: anywhere; }
+
+        footer {
+            text-align: center;
+            color: #637065;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌱 Irrigation Alerts</h1>
+        <p>Smart Agriculture Crop Monitoring System</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Irrigation Monitoring</h2>
+            <p>
+                Irrigation alerts are generated when soil moisture falls
+                below the configured threshold of 20%.
+            </p>
+            <button id="refreshButton" type="button">
+                Refresh Alert History
+            </button>
+            <p id="connectionStatus" class="muted" role="status">
+                Connecting to the alert service...
+            </p>
+        </section>
+
+        <section class="card">
+            <h2>Alert Summary</h2>
+            <div class="summary">
+                <div class="metric">
+                    Total alerts
+                    <strong id="totalAlerts">—</strong>
+                </div>
+                <div class="metric">
+                    Latest soil moisture
+                    <strong id="latestMoisture">—</strong>
+                </div>
+                <div class="metric">
+                    Alert threshold
+                    <strong>20%</strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Alert History</h2>
+            <div id="alertHistory" aria-live="polite">
+                <p class="muted">Loading alerts...</p>
+            </div>
+        </section>
+
+        <p><a href="dashboard.html">← Back to Dashboard</a></p>
+    </main>
+
+    <footer>Cloud-Based Smart Agriculture Crop Monitoring System</footer>
+
+    <script>
+        const ALERTS_API =
+            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/irrigation-alerts";
+
+        const historyContainer = document.getElementById("alertHistory");
+        const statusElement = document.getElementById("connectionStatus");
+
+        async function loadAlerts() {
+            statusElement.textContent = "Loading alert history...";
+            statusElement.className = "muted";
+            historyContainer.replaceChildren();
+
+            try {
+                const response = await fetch(ALERTS_API);
+
+                if (!response.ok) {
+                    throw new Error("API returned HTTP " + response.status);
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data.alerts)) {
+                    throw new Error("The API response does not contain an alerts array.");
+                }
+
+                document.getElementById("totalAlerts").textContent =
+                    data.count ?? data.alerts.length;
+
+                const latest = data.alerts[0];
+
+                document.getElementById("latestMoisture").textContent =
+                    latest && latest.soilMoisture !== undefined
+                        ? latest.soilMoisture + "%"
+                        : "—";
+
+                statusElement.textContent =
+                    "Connected successfully. Alert history loaded.";
+                statusElement.className = "success";
+
+                if (data.alerts.length === 0) {
+                    const empty = document.createElement("p");
+                    empty.className = "muted";
+                    empty.textContent = "No irrigation alerts have been recorded yet.";
+                    historyContainer.appendChild(empty);
+                    return;
+                }
+
+                data.alerts.forEach(alert => {
+                    const card = document.createElement("article");
+                    card.className = "alert";
+
+                    const heading = document.createElement("h3");
+                    heading.textContent = alert.status || "Irrigation Alert";
+                    card.appendChild(heading);
+
+                    const details = [
+                        ["Alert ID", alert.alertId],
+                        ["Farm ID", alert.farmId],
+                        ["Field ID", alert.fieldId],
+                        ["Crop ID", alert.cropId],
+                        ["Soil moisture", alert.soilMoisture + "%"],
+                        ["Threshold", alert.threshold + "%"],
+                        ["Time", alert.timestamp]
+                    ];
+
+                    details.forEach(([label, value]) => {
+                        if (value === undefined || value === null) return;
+
+                        const paragraph = document.createElement("p");
+                        const strong = document.createElement("strong");
+                        strong.textContent = label + ": ";
+                        paragraph.appendChild(strong);
+                        paragraph.appendChild(
+                            document.createTextNode(String(value))
+                        );
+                        card.appendChild(paragraph);
+                    });
+
+                    if (alert.message) {
+                        const message = document.createElement("p");
+                        message.textContent = alert.message;
+                        card.appendChild(message);
+                    }
+
+                    historyContainer.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Failed to load irrigation alerts:", error);
+
+                statusElement.textContent =
+                    "Could not load alerts. Check the API, network and CORS settings.";
+                statusElement.className = "error";
+
+                const message = document.createElement("p");
+                message.className = "error";
+                message.textContent = error.message;
+                historyContainer.appendChild(message);
+            }
+        }
+
+        document.getElementById("refreshButton")
+            .addEventListener("click", loadAlerts);
+
+        loadAlerts();
+    </script>
+</body>
+</html>
