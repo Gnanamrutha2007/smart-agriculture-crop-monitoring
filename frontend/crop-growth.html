@@ -1,37 +1,84 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Crop Growth Monitoring - Smart Agriculture</title>
 
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- Amazon Cognito SDK -->
     <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
 
     <style>
+        body.dashboard-page {
+            background: #f5f8f5;
+            color: #24352a;
+        }
+
         .growth-container {
-            max-width: 850px;
-            margin: 40px auto;
-            padding: 24px;
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .welcome-section {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-label {
+            color: #28834a;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .welcome-section h1 {
+            color: #183d27;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text {
+            color: #718075;
+        }
+
+        .auth-message {
+            margin: 20px 0;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: #fff5df;
+            color: #744d00;
+        }
+
+        .auth-message a {
+            color: #17632b;
+            font-weight: bold;
         }
 
         .growth-form {
-            background: white;
+            background: #fff;
             padding: 28px;
-            border-radius: 16px;
-            border: 1px solid #dce7dd;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border-radius: 18px;
+            border: 1px solid #e1eae1;
+            box-shadow: 0 8px 25px rgba(29, 67, 39, 0.05);
+        }
+
+        .growth-form h2 {
+            color: #183d27;
+            margin-top: 0;
+        }
+
+        .growth-note {
+            color: #758178;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .growth-form label {
             display: block;
-            margin: 16px 0 7px;
-            font-weight: 600;
+            margin: 17px 0 7px;
+            font-size: 14px;
+            font-weight: 650;
+            color: #354b3a;
         }
 
         .growth-form input,
@@ -39,27 +86,56 @@
         .growth-form textarea {
             width: 100%;
             box-sizing: border-box;
-            padding: 12px;
-            border: 1px solid #cbd8cd;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 1px solid #d5e0d6;
+            border-radius: 9px;
+            background: #fff;
             font: inherit;
+            color: #24352a;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .growth-form input:focus,
+        .growth-form select:focus,
+        .growth-form textarea:focus {
+            border-color: #28834a;
+            box-shadow: 0 0 0 3px rgba(40, 131, 74, .1);
         }
 
         .growth-form textarea {
-            min-height: 90px;
+            min-height: 100px;
             resize: vertical;
         }
 
-        .growth-form button {
-            margin-top: 22px;
+        .save-button {
             width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #247b42;
+            color: white;
+            font-size: 14px;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #185d31;
+        }
+
+        .save-button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
         }
 
         .growth-message {
-            margin-top: 18px;
-            padding: 12px;
-            border-radius: 8px;
+            margin-top: 16px;
+            padding: 12px 14px;
+            border-radius: 9px;
             overflow-wrap: anywhere;
+            font-size: 14px;
         }
 
         .growth-message:empty {
@@ -76,534 +152,655 @@
             color: #a32020;
         }
 
-        .growth-note {
-            color: #647567;
+        /* History card */
+        .growth-history {
+            margin-top: 30px;
+            padding: 28px;
+            background: #fff;
+            border: 1px solid #e4ece4;
+            border-radius: 20px;
+            box-shadow: 0 8px 28px rgba(29, 67, 39, .07);
+        }
+
+        .history-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .history-eyebrow {
+            display: inline-block;
+            margin-bottom: 8px;
+            color: #28834a;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .history-heading h2 {
+            margin: 0 0 8px;
+            color: #183d27;
+            font-size: 25px;
+        }
+
+        .history-heading p {
+            margin: 0;
+            color: #758178;
             font-size: 14px;
+            line-height: 1.6;
         }
 
-        .auth-message {
-            margin: 20px 0;
-            padding: 14px;
-            border-radius: 8px;
-            background: #fff5df;
-            color: #744d00;
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 12px 17px;
+            border: 0;
+            border-radius: 10px;
+            background: #247b42;
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
         }
 
-        .auth-message a {
-            color: #17632b;
-            font-weight: bold;
+        .refresh-btn:hover {
+            background: #185d31;
         }
 
-        .growth-form button:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
+        .refresh-btn:disabled {
+            opacity: .65;
+            cursor: wait;
+        }
+
+        .refresh-icon {
+            font-size: 19px;
+        }
+
+        .history-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: fit-content;
+            min-width: 180px;
+            margin-bottom: 22px;
+            padding: 16px 20px;
+            border: 1px solid #e0eee2;
+            border-radius: 14px;
+            background: #f4faf4;
+        }
+
+        .history-stat-icon {
+            display: grid;
+            place-items: center;
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: #e1f2e3;
+            font-size: 23px;
+        }
+
+        .history-stat-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #6e8071;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .8px;
+        }
+
+        .history-stats strong {
+            color: #1c6334;
+            font-size: 27px;
+        }
+
+        .history-message {
+            margin: 0 0 16px;
+            color: #66766a;
+            font-size: 13px;
+        }
+
+        .history-table-wrap {
+            overflow-x: auto;
+            border: 1px solid #e6ece6;
+            border-radius: 13px;
+        }
+
+        .growth-table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            font-size: 13px;
+        }
+
+        .growth-table th {
+            padding: 15px 16px;
+            background: #f3f8f3;
+            color: #526657;
+            border-bottom: 1px solid #e3ebe3;
+            text-align: left;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .6px;
+            white-space: nowrap;
+        }
+
+        .growth-table td {
+            padding: 16px;
+            border-bottom: 1px solid #edf1ed;
+            color: #47564a;
+            line-height: 1.5;
+            vertical-align: middle;
+        }
+
+        .growth-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .growth-table tbody tr:hover {
+            background: #f8fbf8;
+        }
+
+        .growth-stage-badge,
+        .leaf-condition-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e8f6e9;
+            color: #26743a;
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .growth-table .history-empty {
+            padding: 35px 20px;
+            color: #849087;
+            text-align: center;
+        }
+
+        .history-footer {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-top: 17px;
+            color: #849087;
+            font-size: 11px;
+        }
+
+        .footer-dot {
+            width: 7px;
+            height: 7px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #39a65a;
+        }
+
+        @media (max-width: 600px) {
+            .growth-container {
+                padding: 12px;
+            }
+
+            .growth-form,
+            .growth-history {
+                padding: 18px;
+                border-radius: 15px;
+            }
+
+            .history-heading h2 {
+                font-size: 22px;
+            }
+
+            .refresh-btn {
+                width: 100%;
+            }
+
+            .history-stats {
+                width: auto;
+            }
         }
     </style>
 </head>
 
 <body class="dashboard-page">
 
-    <!-- Navigation -->
-    <header class="dashboard-navbar">
+<header class="dashboard-navbar">
+    <div class="dashboard-logo">
+        <span class="logo-icon">🌱</span>
+        <span>Smart Agriculture</span>
+    </div>
 
-        <div class="dashboard-logo">
-            <span class="logo-icon">🌱</span>
-            <span>Smart Agriculture</span>
-        </div>
-
-        <nav class="dashboard-nav">
-            <a href="dashboard.html">Dashboard</a>
-
-            <a href="login.html" id="loginLink">Login</a>
-
-            <button
-                id="logoutButton"
-                class="logout-button"
-                type="button"
-                style="display: none;">
-                Logout
-            </button>
-        </nav>
-
-    </header>
-
-    <main class="growth-container">
-
-        <!-- Welcome section -->
-        <section class="welcome-section">
-            <div>
-                <p class="dashboard-label">CROP MONITORING</p>
-
-                <h1>Record Crop Growth 🌱</h1>
-
-                <p class="welcome-text">
-                    Record observations to monitor crop development over time.
-                </p>
-            </div>
-        </section>
-
-        <!-- Authentication status -->
-        <div id="authMessage"
-             class="auth-message"
-             role="status"
-             aria-live="polite">
-            Checking your login status...
-        </div>
-
-        <!-- Crop growth form -->
-        <form id="growthForm" class="growth-form">
-
-            <h2>Growth Observation</h2>
-
-            <p class="growth-note">
-                Enter the identifiers of your registered farm, field, and crop.
-            </p>
-
-            <label for="farmId">Farm ID *</label>
-            <input
-                id="farmId"
-                name="farmId"
-                required
-                placeholder="Enter your registered farm ID">
-
-            <label for="fieldId">Field ID *</label>
-            <input
-                id="fieldId"
-                name="fieldId"
-                required
-                placeholder="Enter your registered field ID">
-
-            <label for="cropId">Crop ID *</label>
-            <input
-                id="cropId"
-                name="cropId"
-                required
-                placeholder="Enter your registered crop ID">
-
-            <label for="growthStage">Growth Stage *</label>
-            <select id="growthStage" name="growthStage" required>
-                <option value="">Select growth stage</option>
-                <option value="Germination">Germination</option>
-                <option value="Seedling">Seedling</option>
-                <option value="Vegetative">Vegetative</option>
-                <option value="Flowering">Flowering</option>
-                <option value="Fruiting">Fruiting</option>
-                <option value="Maturity">Maturity</option>
-            </select>
-
-            <label for="plantHeight">Plant Height (cm)</label>
-            <input
-                id="plantHeight"
-                name="plantHeight"
-                type="number"
-                min="0"
-                step="0.1"
-                placeholder="e.g. 25.5">
-
-            <label for="leafCondition">Leaf Condition</label>
-            <select id="leafCondition" name="leafCondition">
-                <option value="">Select leaf condition</option>
-                <option value="Healthy">Healthy</option>
-                <option value="Yellowing">Yellowing</option>
-                <option value="Dry">Dry</option>
-                <option value="Damaged">Damaged</option>
-            </select>
-
-            <label for="observationDate">Observation Date *</label>
-            <input
-                id="observationDate"
-                name="observationDate"
-                type="date"
-                required>
-
-            <label for="notes">Notes</label>
-            <textarea
-                id="notes"
-                name="notes"
-                placeholder="Enter additional observations"></textarea>
-
-            <button
-                type="submit"
-                class="dashboard-button"
-                id="saveButton"
-                disabled>
-                Save Growth Observation
-            </button>
-
-            <p id="growthMessage"
-               class="growth-message"
-               role="status"
-               aria-live="polite"></p>
-
-        </form>
-        
-
-         
-<section class="growth-history">
-    <div class="history-heading">
-        <div>
-            <span class="history-eyebrow">FIELD OBSERVATIONS</span>
-            <h2>Crop Growth History</h2>
-            <p>Track crop development and review your previous observations.</p>
-        </div>
-
-        <button type="button" id="loadGrowthBtn" class="refresh-btn">
-            <span class="refresh-icon">↻</span>
-            Refresh Records
+    <nav class="dashboard-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="login.html" id="loginLink">Login</a>
+        <button id="logoutButton" class="logout-button"
+                type="button" style="display:none;">
+            Logout
         </button>
+    </nav>
+</header>
+
+<main class="growth-container">
+
+    <section class="welcome-section">
+        <p class="dashboard-label">CROP MONITORING</p>
+        <h1>Record Crop Growth 🌱</h1>
+        <p class="welcome-text">
+            Record observations and track crop development over time.
+        </p>
+    </section>
+
+    <div id="authMessage" class="auth-message"
+         role="status" aria-live="polite">
+        Checking your login status...
     </div>
 
-    <div class="history-stats">
-        <div class="history-stat-icon">🌱</div>
-        <div>
-            <span class="history-stat-label">TOTAL OBSERVATIONS</span>
-            <strong id="growthRecordCount">—</strong>
+    <form id="growthForm" class="growth-form">
+        <h2>Growth Observation</h2>
+        <p class="growth-note">
+            Enter the identifiers of your registered farm, field, and crop.
+        </p>
+
+        <label for="farmId">Farm ID *</label>
+        <input id="farmId" name="farmId" required
+               placeholder="Enter your registered farm ID">
+
+        <label for="fieldId">Field ID *</label>
+        <input id="fieldId" name="fieldId" required
+               placeholder="Enter your registered field ID">
+
+        <label for="cropId">Crop ID *</label>
+        <input id="cropId" name="cropId" required
+               placeholder="Enter your registered crop ID">
+
+        <label for="growthStage">Growth Stage *</label>
+        <select id="growthStage" name="growthStage" required>
+            <option value="">Select growth stage</option>
+            <option value="Germination">Germination</option>
+            <option value="Seedling">Seedling</option>
+            <option value="Vegetative">Vegetative</option>
+            <option value="Flowering">Flowering</option>
+            <option value="Fruiting">Fruiting</option>
+            <option value="Maturity">Maturity</option>
+        </select>
+
+        <label for="plantHeight">Plant Height (cm)</label>
+        <input id="plantHeight" name="plantHeight"
+               type="number" min="0" step="0.1"
+               placeholder="e.g. 25.5">
+
+        <label for="leafCondition">Leaf Condition</label>
+        <select id="leafCondition" name="leafCondition">
+            <option value="">Select leaf condition</option>
+            <option value="Healthy">Healthy</option>
+            <option value="Yellowing">Yellowing</option>
+            <option value="Dry">Dry</option>
+            <option value="Damaged">Damaged</option>
+        </select>
+
+        <label for="observationDate">Observation Date *</label>
+        <input id="observationDate" name="observationDate"
+               type="date" required>
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes"
+                  placeholder="Enter additional observations"></textarea>
+
+        <button type="submit" class="save-button"
+                id="saveButton" disabled>
+            Save Growth Observation
+        </button>
+
+        <p id="growthMessage" class="growth-message"
+           role="status" aria-live="polite"></p>
+    </form>
+
+    <section class="growth-history">
+        <div class="history-heading">
+            <div>
+                <span class="history-eyebrow">FIELD OBSERVATIONS</span>
+                <h2>Crop Growth History</h2>
+                <p>Review previously recorded crop observations.</p>
+            </div>
+
+            <button type="button" id="loadGrowthBtn"
+                    class="refresh-btn">
+                <span class="refresh-icon">↻</span>
+                Refresh Records
+            </button>
         </div>
-    </div>
 
-    <div id="historyMessage" class="history-message" role="status">
-        Your saved crop observations will appear here.
-    </div>
+        <div class="history-stats">
+            <div class="history-stat-icon">🌱</div>
+            <div>
+                <span class="history-stat-label">TOTAL OBSERVATIONS</span>
+                <strong id="growthRecordCount">—</strong>
+            </div>
+        </div>
 
-    <div class="history-table-wrap">
-        <table class="growth-table">
-            <thead>
-                <tr>
-                    <th>OBSERVATION DATE</th>
-                    <th>CROP ID</th>
-                    <th>GROWTH STAGE</th>
-                    <th>PLANT HEIGHT</th>
-                    <th>LEAF CONDITION</th>
-                    <th>NOTES</th>
-                </tr>
-            </thead>
-            <tbody id="growthHistoryBody">
-                <tr>
-                    <td colspan="6" class="history-empty">
-                        Click “Refresh Records” to load your observations.
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <div id="historyMessage" class="history-message"
+             role="status" aria-live="polite">
+            Click Refresh Records to load observations.
+        </div>
 
-    <div class="history-footer">
-        <span class="footer-dot"></span>
-        Crop growth records retrieved from Amazon DynamoDB
-    </div>
-</section>
-    
+        <div class="history-table-wrap">
+            <table class="growth-table">
+                <thead>
+                    <tr>
+                        <th>OBSERVATION DATE</th>
+                        <th>CROP ID</th>
+                        <th>GROWTH STAGE</th>
+                        <th>PLANT HEIGHT</th>
+                        <th>LEAF CONDITION</th>
+                        <th>NOTES</th>
+                    </tr>
+                </thead>
+                <tbody id="growthHistoryBody">
+                    <tr>
+                        <td colspan="6" class="history-empty">
+                            No records loaded yet.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+        <div class="history-footer">
+            <span class="footer-dot"></span>
+            Crop growth records retrieved from Amazon DynamoDB
+        </div>
+    </section>
 
-    </main>
+</main>
 
-    <script>
-        // ==========================================
-        // CONFIGURATION
-        // ==========================================
+<script>
+    // API configuration
+    const API_URL =
+        "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-growth";
 
-        const GROWTH_API_URL =
-            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-growth";
+    const poolData = {
+        UserPoolId: "ap-south-1_QZT7vDGVW",
+        ClientId: "470o9e2j7gd3888smk5cqqba9i"
+    };
 
-        const poolData = {
-            UserPoolId: "ap-south-1_QZT7vDGVW",
-            ClientId: "470o9e2j7gd3888smk5cqqba9i"
-        };
+    const userPool =
+        new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
-        const userPool =
-            new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    const form = document.getElementById("growthForm");
+    const message = document.getElementById("growthMessage");
+    const authMessage = document.getElementById("authMessage");
+    const saveButton = document.getElementById("saveButton");
+    const loginLink = document.getElementById("loginLink");
+    const logoutButton = document.getElementById("logoutButton");
 
-        const form = document.getElementById("growthForm");
-        const message = document.getElementById("growthMessage");
-        const authMessage = document.getElementById("authMessage");
-        const saveButton = document.getElementById("saveButton");
-        const loginLink = document.getElementById("loginLink");
-        const logoutButton = document.getElementById("logoutButton");
+    const loadGrowthBtn = document.getElementById("loadGrowthBtn");
+    const growthHistoryBody = document.getElementById("growthHistoryBody");
+    const historyMessage = document.getElementById("historyMessage");
+    const growthRecordCount = document.getElementById("growthRecordCount");
 
-        let authenticatedFarmerId = null;
+    let authenticatedFarmerId = null;
 
-        // ==========================================
-        // DEFAULT DATE
-        // ==========================================
+    // Set today's date using the browser's local date.
+    function setToday() {
+        const now = new Date();
+        const localDate = [
+            now.getFullYear(),
+            String(now.getMonth() + 1).padStart(2, "0"),
+            String(now.getDate()).padStart(2, "0")
+        ].join("-");
 
-        function setToday() {
-            const now = new Date();
+        document.getElementById("observationDate").value = localDate;
+    }
 
-            const localDate = [
-                now.getFullYear(),
-                String(now.getMonth() + 1).padStart(2, "0"),
-                String(now.getDate()).padStart(2, "0")
-            ].join("-");
+    setToday();
 
-            document.getElementById("observationDate").value = localDate;
+    // Restore saved farm, field, and crop IDs.
+    ["farmId", "fieldId", "cropId"].forEach(function (id) {
+        const savedValue = sessionStorage.getItem(id);
+        if (savedValue) {
+            document.getElementById(id).value = savedValue;
+        }
+    });
+
+    // Authentication
+    function checkLoginStatus() {
+        saveButton.disabled = true;
+        authenticatedFarmerId = null;
+
+        const currentUser = userPool.getCurrentUser();
+
+        if (!currentUser) {
+            authMessage.textContent = "You are not logged in. Please log in to save crop observations.";
+
+            const link = document.createElement("a");
+            link.href = "login.html";
+            link.textContent = " Log in here.";
+            authMessage.appendChild(link);
+
+            loginLink.style.display = "inline-block";
+            logoutButton.style.display = "none";
+            return;
         }
 
-        setToday();
+        currentUser.getSession(function (error, session) {
+            if (error || !session || !session.isValid()) {
+                authMessage.textContent = "Your session has expired. Please log in again.";
 
-        // ==========================================
-        // RESTORE SAVED FARM, FIELD AND CROP IDS
-        // ==========================================
-
-        ["farmId", "fieldId", "cropId"].forEach(function (id) {
-            const savedValue = sessionStorage.getItem(id);
-
-            if (savedValue) {
-                document.getElementById(id).value = savedValue;
-            }
-        });
-
-        // ==========================================
-        // CHECK COGNITO LOGIN
-        // ==========================================
-
-        function checkLoginStatus() {
-            saveButton.disabled = true;
-            authenticatedFarmerId = null;
-
-            const currentUser = userPool.getCurrentUser();
-
-            if (!currentUser) {
-                sessionStorage.removeItem("farmerId");
-
-                authMessage.innerHTML =
-                    'You are not logged in. <a href="login.html">Log in here</a> to record crop growth.';
+                const link = document.createElement("a");
+                link.href = "login.html";
+                link.textContent = " Log in.";
+                authMessage.appendChild(link);
 
                 loginLink.style.display = "inline-block";
                 logoutButton.style.display = "none";
-
+                saveButton.disabled = true;
                 return;
             }
 
-            currentUser.getSession(function (error, session) {
-                if (error || !session || !session.isValid()) {
-                    sessionStorage.removeItem("farmerId");
+            authenticatedFarmerId = session.getIdToken().payload.sub;
+            sessionStorage.setItem("farmerId", authenticatedFarmerId);
 
-                    authMessage.innerHTML =
-                        'Your session has expired. <a href="login.html">Log in again</a> to continue.';
+            authMessage.textContent =
+                "You are logged in and can record crop-growth observations.";
 
-                    loginLink.style.display = "inline-block";
-                    logoutButton.style.display = "none";
+            loginLink.style.display = "none";
+            logoutButton.style.display = "inline-block";
+            saveButton.disabled = false;
 
-                    return;
-                }
+            // Load history after the session is verified.
+            loadGrowthHistory();
+        });
+    }
 
-                authenticatedFarmerId =
-                    session.getIdToken().payload.sub;
+    checkLoginStatus();
 
-                sessionStorage.setItem(
-                    "farmerId",
-                    authenticatedFarmerId
-                );
+    // Logout
+    logoutButton.addEventListener("click", function () {
+        const currentUser = userPool.getCurrentUser();
 
-                authMessage.textContent =
-                    "You are logged in and can record crop-growth observations.";
+        if (currentUser) {
+            currentUser.signOut();
+        }
 
-                loginLink.style.display = "none";
-                logoutButton.style.display = "inline-block";
-                saveButton.disabled = false;
+        sessionStorage.removeItem("farmerId");
+        authenticatedFarmerId = null;
+        window.location.href = "login.html";
+    });
+
+    // Save an observation
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!authenticatedFarmerId) {
+            message.className = "growth-message error";
+            message.textContent = "Please log in before saving crop growth.";
+            return;
+        }
+
+        const plantHeightValue =
+            document.getElementById("plantHeight").value;
+
+        const payload = {
+            farmerId: authenticatedFarmerId,
+            farmId: document.getElementById("farmId").value.trim(),
+            fieldId: document.getElementById("fieldId").value.trim(),
+            cropId: document.getElementById("cropId").value.trim(),
+            growthStage: document.getElementById("growthStage").value,
+            observationDate: document.getElementById("observationDate").value,
+            leafCondition: document.getElementById("leafCondition").value,
+            notes: document.getElementById("notes").value.trim()
+        };
+
+        if (plantHeightValue !== "") {
+            payload.plantHeight = Number(plantHeightValue);
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+        message.className = "growth-message";
+        message.textContent = "Saving crop-growth observation...";
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
             });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                const missing = Array.isArray(result.missingFields)
+                    ? " Missing fields: " + result.missingFields.join(", ")
+                    : "";
+
+                throw new Error(
+                    (result.message || "Unable to save observation.") + missing
+                );
+            }
+
+            message.className = "growth-message success";
+            message.textContent =
+                "Observation saved successfully. Record ID: " +
+                (result.growth?.growthId || "Created");
+
+            sessionStorage.setItem("farmId", payload.farmId);
+            sessionStorage.setItem("fieldId", payload.fieldId);
+            sessionStorage.setItem("cropId", payload.cropId);
+
+            form.reset();
+
+            document.getElementById("farmId").value = payload.farmId;
+            document.getElementById("fieldId").value = payload.fieldId;
+            document.getElementById("cropId").value = payload.cropId;
+
+            setToday();
+
+            // Refresh history after saving.
+            await loadGrowthHistory();
+
+        } catch (error) {
+            console.error("Crop growth save failed:", error);
+            message.className = "growth-message error";
+            message.textContent =
+                error.message ||
+                "Unable to save the observation. Check the API and browser console.";
+        } finally {
+            saveButton.disabled = !authenticatedFarmerId;
+            saveButton.textContent = "Save Growth Observation";
         }
+    });
 
-        checkLoginStatus();
+    // Load saved growth records
+    async function loadGrowthHistory() {
+        loadGrowthBtn.disabled = true;
+        historyMessage.textContent = "Loading crop growth records...";
 
-        // ==========================================
-        // LOGOUT
-        // ==========================================
+        try {
+            const response = await fetch(API_URL);
 
-        logoutButton.addEventListener("click", function () {
-            const currentUser = userPool.getCurrentUser();
-
-            if (currentUser) {
-                currentUser.signOut();
+            if (!response.ok) {
+                throw new Error("API request failed: " + response.status);
             }
 
-            sessionStorage.removeItem("farmerId");
+            const data = await response.json();
+            const records = Array.isArray(data.growthRecords)
+                ? data.growthRecords
+                : [];
 
-            authenticatedFarmerId = null;
+            growthHistoryBody.replaceChildren();
+            growthRecordCount.textContent = records.length;
 
-            window.location.href = "login.html";
-        });
+            if (records.length === 0) {
+                const row = growthHistoryBody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 6;
+                cell.className = "history-empty";
+                cell.textContent = "No crop growth records found.";
+            } else {
+                records.forEach(function (record) {
+                    const row = growthHistoryBody.insertRow();
 
-        // ==========================================
-        // SAVE CROP GROWTH OBSERVATION
-        // ==========================================
+                    const dateCell = row.insertCell();
+                    dateCell.textContent = record.observationDate || "—";
 
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
+                    const cropCell = row.insertCell();
+                    cropCell.textContent = record.cropId || "—";
 
-            // Verify that the farmer is authenticated.
-            if (!authenticatedFarmerId) {
-                message.className = "growth-message error";
-                message.textContent =
-                    "Please log in before saving crop growth.";
+                    const stageCell = row.insertCell();
+                    const stageBadge = document.createElement("span");
+                    stageBadge.className = "growth-stage-badge";
+                    stageBadge.textContent = record.growthStage || "Unknown";
+                    stageCell.appendChild(stageBadge);
 
-                loginLink.style.display = "inline-block";
-                return;
-            }
+                    const heightCell = row.insertCell();
+                    heightCell.textContent =
+                        record.plantHeight != null
+                            ? record.plantHeight + " cm"
+                            : "—";
 
-            const plantHeightValue =
-                document.getElementById("plantHeight").value;
+                    const leafCell = row.insertCell();
+                    const leafBadge = document.createElement("span");
+                    leafBadge.className = "leaf-condition-badge";
+                    leafBadge.textContent = record.leafCondition || "—";
+                    leafCell.appendChild(leafBadge);
 
-            const payload = {
-                farmerId: authenticatedFarmerId,
-
-                farmId:
-                    document.getElementById("farmId").value.trim(),
-
-                fieldId:
-                    document.getElementById("fieldId").value.trim(),
-
-                cropId:
-                    document.getElementById("cropId").value.trim(),
-
-                growthStage:
-                    document.getElementById("growthStage").value,
-
-                observationDate:
-                    document.getElementById("observationDate").value,
-
-                leafCondition:
-                    document.getElementById("leafCondition").value,
-
-                notes:
-                    document.getElementById("notes").value.trim()
-            };
-
-            if (plantHeightValue !== "") {
-                payload.plantHeight = Number(plantHeightValue);
-            }
-
-            saveButton.disabled = true;
-            saveButton.textContent = "Saving...";
-
-            message.className = "growth-message";
-            message.textContent = "Saving crop-growth observation...";
-
-            try {
-                const response = await fetch(GROWTH_API_URL, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
+                    const notesCell = row.insertCell();
+                    notesCell.textContent = record.notes || "—";
                 });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    const missing = Array.isArray(result.missingFields)
-                        ? " Missing fields: " +
-                          result.missingFields.join(", ")
-                        : "";
-
-                    throw new Error(
-                        (result.message || "Unable to save observation.") +
-                        missing
-                    );
-                }
-
-                message.className = "growth-message success";
-
-                message.textContent =
-                    "Growth observation saved successfully. Record ID: " +
-                    result.growth.growthId;
-
-                // Remember the selected IDs in this browser session.
-                sessionStorage.setItem("farmId", payload.farmId);
-                sessionStorage.setItem("fieldId", payload.fieldId);
-                sessionStorage.setItem("cropId", payload.cropId);
-
-                // Clear the observation fields but preserve the IDs.
-                form.reset();
-
-                document.getElementById("farmId").value =
-                    payload.farmId;
-
-                document.getElementById("fieldId").value =
-                    payload.fieldId;
-
-                document.getElementById("cropId").value =
-                    payload.cropId;
-
-                setToday();
-
-            } catch (error) {
-                console.error("Crop growth save failed:", error);
-
-                message.className = "growth-message error";
-
-                message.textContent =
-                    error.message ||
-                    "Unable to save the observation. Check API connectivity and CORS configuration.";
-
-            } finally {
-                saveButton.disabled = !authenticatedFarmerId;
-                saveButton.textContent = "Save Growth Observation";
             }
-        });
 
-        
-const GROWTH_HISTORY_API =
-    "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-growth";
+            historyMessage.textContent =
+                "Successfully loaded " + records.length +
+                " crop growth observations.";
 
-const loadGrowthBtn = document.getElementById("loadGrowthBtn");
-const growthHistoryBody = document.getElementById("growthHistoryBody");
-const historyMessage = document.getElementById("historyMessage");
+        } catch (error) {
+            console.error("Error loading crop growth:", error);
 
-async function loadGrowthHistory() {
-    loadGrowthBtn.disabled = true;
-    historyMessage.textContent = "Loading crop growth records...";
+            growthRecordCount.textContent = "—";
+            growthHistoryBody.replaceChildren();
 
-    try {
-        const response = await fetch(GROWTH_HISTORY_API);
-
-        if (!response.ok) {
-            throw new Error("API request failed: " + response.status);
-        }
-
-        const data = await response.json();
-        const records = data.growthRecords || [];
-
-        growthHistoryBody.replaceChildren();
-
-        if (records.length === 0) {
             const row = growthHistoryBody.insertRow();
             const cell = row.insertCell();
             cell.colSpan = 6;
-            cell.textContent = "No crop growth records found.";
-        } else {
-            records.forEach(record => {
-                const row = growthHistoryBody.insertRow();
+            cell.className = "history-empty";
+            cell.textContent = "Unable to load records. Please try again.";
 
-                [
-                    record.observationDate || "—",
-                    record.cropId || "—",
-                    record.growthStage || "—",
-                    record.plantHeight ?? "—",
-                    record.leafCondition || "—",
-                    record.notes || "—"
-                ].forEach(value => {
-                    const cell = row.insertCell();
-                    cell.textContent = String(value);
-                });
-            });
+            historyMessage.textContent =
+                "Could not load records. Check the API, CORS settings, and browser console.";
+        } finally {
+            loadGrowthBtn.disabled = false;
         }
-
-        historyMessage.textContent =
-            "Successfully loaded " + records.length + " records.";
-    } catch (error) {
-        console.error("Error loading crop growth:", error);
-        historyMessage.textContent =
-            "Could not load records. Check the API and browser console.";
-    } finally {
-        loadGrowthBtn.disabled = false;
     }
-}
 
-loadGrowthBtn.addEventListener("click", loadGrowthHistory);
-
-    </script>
+    loadGrowthBtn.addEventListener("click", loadGrowthHistory);
+</script>
 
 </body>
 </html>
-```
