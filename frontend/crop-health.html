@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Health Assessment | Smart Agriculture</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f7f1;
+      color: #263528;
+    }
+
+    header {
+      background: #216b3b;
+      color: white;
+      padding: 22px 6%;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 26px;
+    }
+
+    header p {
+      margin: 0;
+      color: #e2f3e5;
+      font-size: 14px;
+    }
+
+    nav {
+      background: white;
+      padding: 14px 6%;
+      border-bottom: 1px solid #dce7da;
+    }
+
+    nav a {
+      color: #216b3b;
+      text-decoration: none;
+      font-weight: bold;
+      margin-right: 20px;
+      font-size: 14px;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .intro {
+      margin-bottom: 22px;
+    }
+
+    .intro h2 {
+      margin-bottom: 8px;
+      color: #205d34;
+    }
+
+    .intro p {
+      color: #617064;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 22px;
+      border: 1px solid #e0e9de;
+      box-shadow: 0 4px 15px rgba(35, 75, 40, 0.06);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #216b3b;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd8c9;
+      border-radius: 7px;
+      font-size: 14px;
+      background: #fff;
+      color: #263528;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid #a5d6ad;
+      border-color: #39834c;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #6c796d;
+      line-height: 1.5;
+    }
+
+    button {
+      background: #287a40;
+      color: white;
+      border: none;
+      padding: 13px 22px;
+      border-radius: 7px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d6031;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .secondary-button {
+      background: #e7f2e6;
+      color: #216b3b;
+    }
+
+    .secondary-button:hover {
+      background: #d5e9d4;
+    }
+
+    #message {
+      display: none;
+      padding: 13px;
+      border-radius: 7px;
+      margin-top: 18px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .success {
+      display: block !important;
+      background: #e4f5e6;
+      color: #205d34;
+      border: 1px solid #b8dfbf;
+    }
+
+    .error {
+      display: block !important;
+      background: #fff0ed;
+      color: #a02d22;
+      border: 1px solid #efc3bc;
+    }
+
+    #result {
+      display: none;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 8px 13px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      background: #e5f5e7;
+      color: #216b3b;
+    }
+
+    .status.attention {
+      background: #fff0d5;
+      color: #8b5200;
+    }
+
+    .result-item {
+      padding: 14px;
+      background: #f7faf6;
+      border-radius: 8px;
+      margin-top: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .result-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #315b39;
+    }
+
+    .result-item ul {
+      margin-bottom: 0;
+      padding-left: 22px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 22px;
+      color: #667366;
+      font-size: 13px;
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: auto;
+      }
+
+      .card {
+        padding: 18px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🌱 Smart Agriculture</h1>
+    <p>Cloud-Based Smart Agriculture Crop Monitoring System</p>
+  </header>
+
+  <nav>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="farm.html">Farm Management</a>
+    <a href="crop-growth.html">Crop Growth</a>
+    <a href="crop-health.html">Crop Health</a>
+  </nav>
+
+  <main>
+    <section class="intro">
+      <h2>Crop Health Assessment</h2>
+      <p>
+        Enter the crop details, environmental readings, and observed leaf
+        condition. The AWS backend evaluates the supplied information and
+        returns potential risk factors and recommendations.
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>Assessment Details</h3>
+
+      <form id="healthForm">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label for="farmerId">Farmer ID *</label>
+            <input id="farmerId" name="farmerId" required
+                   placeholder="Enter farmer ID">
+          </div>
+
+          <div class="form-group">
+            <label for="farmId">Farm ID *</label>
+            <input id="farmId" name="farmId" required
+                   placeholder="Enter farm ID">
+          </div>
+
+          <div class="form-group">
+            <label for="fieldId">Field ID *</label>
+            <input id="fieldId" name="fieldId" required
+                   placeholder="Enter field ID">
+          </div>
+
+          <div class="form-group">
+            <label for="cropId">Crop ID *</label>
+            <input id="cropId" name="cropId" required
+                   placeholder="Enter crop ID">
+          </div>
+
+          <div class="form-group">
+            <label for="temperature">Temperature (°C)</label>
+            <input type="number" id="temperature" name="temperature"
+                   step="any" min="-50" max="70"
+                   placeholder="e.g. 32">
+            <span class="hint">Enter a reading if available.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="humidity">Humidity (%)</label>
+            <input type="number" id="humidity" name="humidity"
+                   step="any" min="0" max="100"
+                   placeholder="e.g. 55">
+          </div>
+
+          <div class="form-group">
+            <label for="soilMoisture">Soil Moisture (%)</label>
+            <input type="number" id="soilMoisture" name="soilMoisture"
+                   step="any" min="0" max="100"
+                   placeholder="e.g. 15">
+          </div>
+
+          <div class="form-group">
+            <label for="leafCondition">Leaf Condition *</label>
+            <select id="leafCondition" name="leafCondition" required>
+              <option value="Healthy">Healthy</option>
+              <option value="Yellowing">Yellowing</option>
+              <option value="Wilted">Wilted</option>
+              <option value="Damaged">Damaged</option>
+              <option value="Discolored">Discolored</option>
+              <option value="Unknown">Unknown</option>
+            </select>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="symptoms">Observed Symptoms</label>
+            <textarea id="symptoms" name="symptoms"
+              placeholder="Describe visible changes or symptoms..."></textarea>
+          </div>
+
+          <div class="form-group full-width">
+            <button type="submit" id="submitButton">
+              Assess Crop Health
+            </button>
+          </div>
+
+        </div>
+      </form>
+
+      <div id="message" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="card" id="result">
+      <h3>Assessment Result</h3>
+
+      <p>
+        Health Status:
+        <span id="healthStatus" class="status">Not assessed</span>
+      </p>
+
+      <div class="result-item">
+        <strong>Risk Factors</strong>
+        <ul id="riskFactors">
+          <li>No assessment yet.</li>
+        </ul>
+      </div>
+
+      <div class="result-item">
+        <strong>Recommendation</strong>
+        <p id="recommendation">Submit an assessment to see recommendations.</p>
+      </div>
+
+      <div class="result-item">
+        <strong>Assessment Record ID</strong>
+        <span id="recordId">Not available</span>
+      </div>
+
+      <div class="result-item">
+        <strong>Assessment Time</strong>
+        <span id="assessedAt">Not available</span>
+      </div>
+
+      <p class="hint">
+        This is a rule-based assessment using the configured thresholds.
+        It does not diagnose crop diseases or guarantee that a crop is healthy.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Cloud-Based Smart Agriculture Crop Monitoring System
+  </footer>
+
+  <script>
+    const API_URL =
+      "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-health";
+
+    const form = document.getElementById("healthForm");
+    const submitButton = document.getElementById("submitButton");
+    const messageBox = document.getElementById("message");
+
+    // Fill the farmer ID from the existing login session, if available.
+    // The farmer can still edit this field.
+    const savedFarmerId = sessionStorage.getItem("farmerId");
+
+    if (savedFarmerId) {
+      document.getElementById("farmerId").value = savedFarmerId;
+    }
+
+    function showMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = type;
+    }
+
+    function displayList(elementId, items, emptyMessage) {
+      const list = document.getElementById(elementId);
+      list.replaceChildren();
+
+      if (!Array.isArray(items) || items.length === 0) {
+        const li = document.createElement("li");
+        li.textContent = emptyMessage;
+        list.appendChild(li);
+        return;
+      }
+
+      items.forEach(function(item) {
+        const li = document.createElement("li");
+        li.textContent = String(item);
+        list.appendChild(li);
+      });
+    }
+
+    function displayResult(record) {
+      document.getElementById("result").style.display = "block";
+
+      const statusElement = document.getElementById("healthStatus");
+      statusElement.textContent = record.healthStatus || "Unknown";
+
+      statusElement.className =
+        record.healthStatus === "Attention Required"
+          ? "status attention"
+          : "status";
+
+      displayList(
+        "riskFactors",
+        record.riskFactors,
+        "No configured risk factors detected."
+      );
+
+      document.getElementById("recommendation").textContent =
+        record.recommendation || "No recommendation returned.";
+
+      document.getElementById("recordId").textContent =
+        record.healthRecordId || "Not available";
+
+      document.getElementById("assessedAt").textContent =
+        record.assessedAt || "Not available";
+    }
+
+    form.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      messageBox.className = "";
+      messageBox.textContent = "";
+      submitButton.disabled = true;
+      submitButton.textContent = "Assessing...";
+
+      const payload = {
+        farmerId: document.getElementById("farmerId").value.trim(),
+        farmId: document.getElementById("farmId").value.trim(),
+        fieldId: document.getElementById("fieldId").value.trim(),
+        cropId: document.getElementById("cropId").value.trim(),
+        leafCondition: document.getElementById("leafCondition").value,
+        symptoms: document.getElementById("symptoms").value.trim()
+      };
+
+      // Send optional measurements only when the farmer enters a value.
+      const optionalFields = [
+        "temperature",
+        "humidity",
+        "soilMoisture"
+      ];
+
+      for (const field of optionalFields) {
+        const value = document.getElementById(field).value;
+
+        if (value !== "") {
+          payload[field] = Number(value);
+        }
+      }
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const responseText = await response.text();
+        let data;
+
+        try {
+          data = JSON.parse(responseText);
+        } catch {
+          throw new Error(
+            "The server returned an unexpected response. HTTP " +
+            response.status
+          );
+        }
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Request failed with HTTP " + response.status
+          );
+        }
+
+        if (!data.healthAssessment) {
+          throw new Error("The server did not return an assessment record.");
+        }
+
+        displayResult(data.healthAssessment);
+        showMessage(
+          "Success! " + (data.message || "Assessment completed."),
+          "success"
+        );
+
+      } catch (error) {
+        console.error("Crop health assessment error:", error);
+
+        showMessage(
+          "Could not complete the assessment: " + error.message +
+          ". Check your API connection and browser console.",
+          "error"
+        );
+
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Assess Crop Health";
+      }
+    });
+  </script>
+</body>
+</html>
