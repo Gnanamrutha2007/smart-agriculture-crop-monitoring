@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Growth Monitoring</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .growth-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        .growth-form {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid #dce7dd;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .growth-form label {
+            display: block;
+            margin: 16px 0 7px;
+            font-weight: 600;
+        }
+
+        .growth-form input,
+        .growth-form select,
+        .growth-form textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #cbd8cd;
+            border-radius: 8px;
+            font: inherit;
+        }
+
+        .growth-form textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .growth-form button {
+            margin-top: 22px;
+            width: 100%;
+        }
+
+        .growth-message {
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .growth-message:empty {
+            display: none;
+        }
+
+        .growth-message.success {
+            background: #e7f6e9;
+            color: #17632b;
+        }
+
+        .growth-message.error {
+            background: #fff0f0;
+            color: #a32020;
+        }
+
+        .growth-note {
+            color: #647567;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body class="dashboard-page">
+
+<header class="dashboard-navbar">
+    <div class="dashboard-logo">
+        <span class="logo-icon">🌱</span>
+        <span>Smart Agriculture</span>
+    </div>
+
+    <nav class="dashboard-nav">
+        <a href="dashboard.html">Dashboard</a>
+    </nav>
+</header>
+
+<main class="growth-container">
+    <section class="welcome-section">
+        <div>
+            <p class="dashboard-label">CROP MONITORING</p>
+            <h1>Record Crop Growth 🌱</h1>
+            <p class="welcome-text">
+                Record observations to monitor crop development over time.
+            </p>
+        </div>
+    </section>
+
+    <form id="growthForm" class="growth-form">
+        <h2>Growth Observation</h2>
+
+        <p class="growth-note">
+            Enter the identifiers of your registered farm, field, and crop.
+        </p>
+
+        <label for="farmId">Farm ID *</label>
+        <input id="farmId" name="farmId" required
+               placeholder="Enter your farm ID">
+
+        <label for="fieldId">Field ID *</label>
+        <input id="fieldId" name="fieldId" required
+               placeholder="Enter your field ID">
+
+        <label for="cropId">Crop ID *</label>
+        <input id="cropId" name="cropId" required
+               placeholder="Enter your crop ID">
+
+        <label for="growthStage">Growth Stage *</label>
+        <select id="growthStage" name="growthStage" required>
+            <option value="">Select growth stage</option>
+            <option value="Germination">Germination</option>
+            <option value="Seedling">Seedling</option>
+            <option value="Vegetative">Vegetative</option>
+            <option value="Flowering">Flowering</option>
+            <option value="Fruiting">Fruiting</option>
+            <option value="Maturity">Maturity</option>
+        </select>
+
+        <label for="plantHeight">Plant Height (cm)</label>
+        <input id="plantHeight" name="plantHeight"
+               type="number" min="0" step="0.1"
+               placeholder="e.g. 25.5">
+
+        <label for="leafCondition">Leaf Condition</label>
+        <select id="leafCondition" name="leafCondition">
+            <option value="">Select leaf condition</option>
+            <option value="Healthy">Healthy</option>
+            <option value="Yellowing">Yellowing</option>
+            <option value="Dry">Dry</option>
+            <option value="Damaged">Damaged</option>
+        </select>
+
+        <label for="observationDate">Observation Date *</label>
+        <input id="observationDate" name="observationDate"
+               type="date" required>
+
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes"
+                  placeholder="Enter additional observations"></textarea>
+
+        <button type="submit" class="dashboard-button" id="saveButton">
+            Save Growth Observation
+        </button>
+
+        <p id="growthMessage" class="growth-message"
+           role="status" aria-live="polite"></p>
+    </form>
+</main>
+
+<script>
+    const GROWTH_API_URL =
+        "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/crop-growth";
+
+    const form = document.getElementById("growthForm");
+    const message = document.getElementById("growthMessage");
+    const saveButton = document.getElementById("saveButton");
+
+    // Restore IDs saved by the existing project pages, if available.
+    ["farmId", "fieldId", "cropId"].forEach(function (id) {
+        const savedValue = sessionStorage.getItem(id);
+        if (savedValue) {
+            document.getElementById(id).value = savedValue;
+        }
+    });
+
+    // Default the observation date to today.
+    document.getElementById("observationDate").value =
+        new Date().toLocaleDateString("en-CA");
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const farmerId = sessionStorage.getItem("farmerId");
+
+        if (!farmerId) {
+            message.className = "growth-message error";
+            message.textContent =
+                "Farmer session not found. Please log in again.";
+            return;
+        }
+
+        const plantHeightValue =
+            document.getElementById("plantHeight").value;
+
+        const payload = {
+            farmerId: farmerId,
+            farmId: document.getElementById("farmId").value.trim(),
+            fieldId: document.getElementById("fieldId").value.trim(),
+            cropId: document.getElementById("cropId").value.trim(),
+            growthStage: document.getElementById("growthStage").value,
+            observationDate:
+                document.getElementById("observationDate").value,
+            leafCondition:
+                document.getElementById("leafCondition").value,
+            notes: document.getElementById("notes").value.trim()
+        };
+
+        if (plantHeightValue !== "") {
+            payload.plantHeight = Number(plantHeightValue);
+        }
+
+        saveButton.disabled = true;
+        saveButton.textContent = "Saving...";
+        message.className = "growth-message";
+        message.textContent = "Saving crop-growth observation...";
+
+        try {
+            const response = await fetch(GROWTH_API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                const missing = result.missingFields
+                    ? " Missing fields: " + result.missingFields.join(", ")
+                    : "";
+
+                throw new Error(
+                    (result.message || "Unable to save observation.") + missing
+                );
+            }
+
+            message.className = "growth-message success";
+            message.textContent =
+                "Growth observation saved successfully. Record ID: " +
+                result.growth.growthId;
+
+            // Remember the IDs for later visits in this browser session.
+            sessionStorage.setItem("farmId", payload.farmId);
+            sessionStorage.setItem("fieldId", payload.fieldId);
+            sessionStorage.setItem("cropId", payload.cropId);
+
+            form.reset();
+
+            document.getElementById("observationDate").value =
+                new Date().toLocaleDateString("en-CA");
+
+            document.getElementById("farmId").value = payload.farmId;
+            document.getElementById("fieldId").value = payload.fieldId;
+            document.getElementById("cropId").value = payload.cropId;
+
+        } catch (error) {
+            console.error("Crop growth save failed:", error);
+
+            message.className = "growth-message error";
+            message.textContent =
+                error.message ||
+                "Unable to save the observation. Check the API and CORS settings.";
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = "Save Growth Observation";
+        }
+    });
+</script>
+
+</body>
+</html>
