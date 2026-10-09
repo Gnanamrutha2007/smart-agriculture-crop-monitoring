@@ -1,708 +1,473 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Farmer Dashboard - Smart Agriculture</title>
-
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 
 <body class="dashboard-page">
 
-    <!-- ============================= -->
-    <!-- NAVIGATION -->
-    <!-- ============================= -->
-
+    <!-- Navigation -->
     <header class="dashboard-navbar">
-
         <div class="dashboard-logo">
             <span class="logo-icon">🌱</span>
             <span>Smart Agriculture</span>
         </div>
 
         <nav class="dashboard-nav">
-
-            <a href="index.html">
-                Home
-            </a>
-
-            <button
-                id="logoutButton"
-                class="logout-button"
-            >
+            <a href="index.html">Home</a>
+            <button id="logoutButton" class="logout-button">
                 Logout
             </button>
-
         </nav>
-
     </header>
-
-
-    <!-- ============================= -->
-    <!-- MAIN DASHBOARD -->
-    <!-- ============================= -->
 
     <main class="dashboard-main">
 
-
         <!-- Welcome section -->
-
         <section class="welcome-section">
-
             <div>
-
-                <p class="dashboard-label">
-                    FARMER DASHBOARD
-                </p>
-
-                <h1>
-                    Welcome back! 🌱
-                </h1>
-
+                <p class="dashboard-label">FARMER DASHBOARD</p>
+                <h1>Welcome back! 🌱</h1>
                 <p class="welcome-text">
                     Monitor your farms, crops and environmental
                     conditions from one place.
                 </p>
-
             </div>
-
 
             <div class="farmer-account">
-
-                <div class="account-icon">
-                    👨‍🌾
-                </div>
-
+                <div class="account-icon">👨‍🌾</div>
                 <div>
-
-                    <span class="account-label">
-                        Logged in as
-                    </span>
-
-                    <strong id="farmerEmail">
-                        Loading...
-                    </strong>
-
+                    <span class="account-label">Logged in as</span>
+                    <strong id="farmerEmail">Loading...</strong>
                 </div>
-
             </div>
-
         </section>
 
-
-        <!-- ============================= -->
-        <!-- SUMMARY CARDS -->
-        <!-- ============================= -->
-
+        <!-- Summary cards -->
         <section class="summary-grid">
-
             <div class="summary-card">
-
-                <div class="summary-icon farm-icon">
-                    🌾
-                </div>
-
+                <div class="summary-icon farm-icon">🌾</div>
                 <div>
-
-                    <span>
-                        Total Farms
-                    </span>
-
-                    <strong>
-                        0
-                    </strong>
-
+                    <span>Total Farms</span>
+                    <strong id="totalFarms">0</strong>
                 </div>
-
             </div>
 
-
             <div class="summary-card">
-
-                <div class="summary-icon field-icon">
-                    📍
-                </div>
-
+                <div class="summary-icon field-icon">📍</div>
                 <div>
-
-                    <span>
-                        Total Fields
-                    </span>
-
-                    <strong>
-                        0
-                    </strong>
-
+                    <span>Total Fields</span>
+                    <strong id="totalFields">0</strong>
                 </div>
-
             </div>
 
-
             <div class="summary-card">
-
-                <div class="summary-icon crop-icon">
-                    🌱
-                </div>
-
+                <div class="summary-icon crop-icon">🌱</div>
                 <div>
-
-                    <span>
-                        Active Crops
-                    </span>
-
-                    <strong>
-                        0
-                    </strong>
-
+                    <span>Active Crops</span>
+                    <strong id="totalCrops">0</strong>
                 </div>
-
             </div>
 
-
             <div class="summary-card">
-
-                <div class="summary-icon alert-icon">
-                    🚨
-                </div>
-
+                <div class="summary-icon alert-icon">🚨</div>
                 <div>
-
-                    <span>
-                        Active Alerts
-                    </span>
-
-                    <strong>
-                        0
-                    </strong>
-
+                    <span>Active Alerts</span>
+                    <strong id="totalAlerts">0</strong>
                 </div>
-
             </div>
-
         </section>
 
-
-        <!-- ============================= -->
-        <!-- MANAGEMENT SECTION -->
-        <!-- ============================= -->
-
+        <!-- Farm management -->
         <section class="dashboard-section">
-
             <div class="section-heading">
-
                 <div>
-
-                    <p class="section-label">
-                        FARM MANAGEMENT
-                    </p>
-
-                    <h2>
-                        Manage Your Agriculture
-                    </h2>
-
+                    <p class="section-label">FARM MANAGEMENT</p>
+                    <h2>Manage Your Agriculture</h2>
                 </div>
-
             </div>
-
 
             <div class="dashboard-grid">
 
-
-                <!-- Farms -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        🌾
-                    </div>
-
-                    <h3>
-                        Farms
-                    </h3>
-
-                    <p>
-                        Register and manage your farms
-                        and agricultural locations.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">🌾</div>
+                    <h3>Farms</h3>
+                    <p>Register and manage your farms and agricultural locations.</p>
+                    <button class="dashboard-button"
+                        onclick="window.location.href='farm.html'">
                         Manage Farms →
                     </button>
-
                 </div>
 
-
-                <!-- Fields -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        📍
-                    </div>
-
-                    <h3>
-                        Fields
-                    </h3>
-
-                    <p>
-                        Manage individual fields
-                        associated with your farms.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">📍</div>
+                    <h3>Fields</h3>
+                    <p>Manage individual fields associated with your farms.</p>
+                    <button class="dashboard-button"
+                        onclick="window.location.href='field.html'">
                         Manage Fields →
                     </button>
-
                 </div>
 
-
-                <!-- Crops -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        🌱
-                    </div>
-
-                    <h3>
-                        Crops
-                    </h3>
-
-                    <p>
-                        Register crops and record
-                        planting dates and crop types.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">🌱</div>
+                    <h3>Crops</h3>
+                    <p>Register crops and record planting dates and crop types.</p>
+                    <button class="dashboard-button"
+                        onclick="window.location.href='crop.html'">
                         Manage Crops →
                     </button>
-
                 </div>
 
-
-                <!-- Environment -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        🌡️
-                    </div>
-
-                    <h3>
-                        Environment
-                    </h3>
-
-                    <p>
-                        Monitor temperature, humidity
-                        and soil conditions.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">🌡️</div>
+                    <h3>Environment</h3>
+                    <p>Monitor temperature, humidity and soil conditions.</p>
+                    <button class="dashboard-button"
+                        onclick="document.getElementById('environmentSection').scrollIntoView({behavior:'smooth'})">
                         View Environment →
                     </button>
-
                 </div>
 
-
-                <!-- Irrigation -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        💧
-                    </div>
-
-                    <h3>
-                        Irrigation
-                    </h3>
-
-                    <p>
-                        Record irrigation activities
-                        and monitor water requirements.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">💧</div>
+                    <h3>Irrigation</h3>
+                    <p>Record irrigation activities and monitor water requirements.</p>
+                    <button class="dashboard-button"
+                        onclick="alert('Irrigation page integration is pending.')">
                         Manage Irrigation →
                     </button>
-
                 </div>
 
-
-                <!-- Crop Health -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        🌿
-                    </div>
-
-                    <h3>
-                        Crop Health
-                    </h3>
-
-                    <p>
-                        Monitor crop growth and
-                        maintain crop health history.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">🌿</div>
+                    <h3>Crop Health</h3>
+                    <p>Monitor crop growth and maintain crop health history.</p>
+                    <button class="dashboard-button"
+                        onclick="alert('Crop health page integration is pending.')">
                         View Crop Health →
                     </button>
-
                 </div>
 
-
-                <!-- Alerts -->
-
                 <div class="dashboard-card">
-
-                    <div class="card-icon alert-card-icon">
-                        🚨
-                    </div>
-
-                    <h3>
-                        Alerts
-                    </h3>
-
-                    <p>
-                        View irrigation and environmental
-                        threshold alerts.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon alert-card-icon">🚨</div>
+                    <h3>Alerts</h3>
+                    <p>View irrigation and environmental threshold alerts.</p>
+                    <button class="dashboard-button"
+                        onclick="alert('Alerts page integration is pending.')">
                         View Alerts →
                     </button>
-
                 </div>
-
-
-                <!-- Reports -->
 
                 <div class="dashboard-card">
-
-                    <div class="card-icon">
-                        📊
-                    </div>
-
-                    <h3>
-                        Reports
-                    </h3>
-
-                    <p>
-                        View field-wise, crop-wise and
-                        historical reports.
-                    </p>
-
-                    <button class="dashboard-button">
+                    <div class="card-icon">📊</div>
+                    <h3>Reports</h3>
+                    <p>View field-wise, crop-wise and historical reports.</p>
+                    <button class="dashboard-button"
+                        onclick="alert('Reports page integration is pending.')">
                         View Reports →
                     </button>
-
                 </div>
 
             </div>
-
         </section>
 
-
-        <!-- ============================= -->
-        <!-- CURRENT STATUS -->
-        <!-- ============================= -->
-
-        <section class="dashboard-section">
-
+        <!-- Environmental monitoring -->
+        <section class="dashboard-section" id="environmentSection">
             <div class="section-heading">
-
                 <div>
-
-                    <p class="section-label">
-                        FARM MONITORING
-                    </p>
-
-                    <h2>
-                        Current Environment
-                    </h2>
-
+                    <p class="section-label">FARM MONITORING</p>
+                    <h2>Current Environment</h2>
                 </div>
-
             </div>
-
 
             <div class="environment-grid">
 
-
                 <div class="environment-card">
-
-                    <div class="environment-icon">
-                        🌡️
-                    </div>
-
+                    <div class="environment-icon">🌡️</div>
                     <div>
-
-                        <span>
-                            Temperature
-                        </span>
-
-                        <strong>
-                            --
-                        </strong>
-
-                        <small>
-                            No sensor data yet
-                        </small>
-
+                        <span>Temperature</span>
+                        <strong id="temperatureValue">--</strong>
+                        <small id="temperatureStatus">Loading sensor data...</small>
                     </div>
-
                 </div>
 
-
                 <div class="environment-card">
-
-                    <div class="environment-icon">
-                        💧
-                    </div>
-
+                    <div class="environment-icon">💧</div>
                     <div>
-
-                        <span>
-                            Humidity
-                        </span>
-
-                        <strong>
-                            --
-                        </strong>
-
-                        <small>
-                            No sensor data yet
-                        </small>
-
+                        <span>Humidity</span>
+                        <strong id="humidityValue">--</strong>
+                        <small id="humidityStatus">Loading sensor data...</small>
                     </div>
-
                 </div>
 
-
                 <div class="environment-card">
-
-                    <div class="environment-icon">
-                        🌱
-                    </div>
-
+                    <div class="environment-icon">🌱</div>
                     <div>
-
-                        <span>
-                            Soil Moisture
-                        </span>
-
-                        <strong>
-                            --
-                        </strong>
-
-                        <small>
-                            No sensor data yet
-                        </small>
-
+                        <span>Soil Moisture</span>
+                        <strong id="soilMoistureValue">--</strong>
+                        <small id="soilMoistureStatus">Loading sensor data...</small>
                     </div>
-
                 </div>
 
-
                 <div class="environment-card">
-
-                    <div class="environment-icon">
-                        ☁️
-                    </div>
-
+                    <div class="environment-icon">☁️</div>
                     <div>
-
-                        <span>
-                            Weather
-                        </span>
-
-                        <strong>
-                            --
-                        </strong>
-
-                        <small>
-                            Weather integration pending
-                        </small>
-
+                        <span>Weather Temperature</span>
+                        <strong id="weatherValue">--</strong>
+                        <small id="weatherStatus">Loading weather data...</small>
                     </div>
-
                 </div>
 
             </div>
-
         </section>
-
 
     </main>
 
-
-    <!-- ============================= -->
-    <!-- FOOTER -->
-    <!-- ============================= -->
-
+    <!-- Footer -->
     <footer class="dashboard-footer">
-
-        <p>
-            © 2026 Smart Agriculture Crop Monitoring System
-        </p>
-
-        <p>
-            Cloud-Based Smart Agriculture
-        </p>
-
+        <p>© 2026 Smart Agriculture Crop Monitoring System</p>
+        <p>Cloud-Based Smart Agriculture</p>
     </footer>
 
-
-    <!-- AWS Cognito -->
-
+    <!-- Amazon Cognito SDK -->
     <script src="https://cdn.jsdelivr.net/npm/amazon-cognito-identity-js@6.3.12/dist/amazon-cognito-identity.min.js"></script>
 
-
     <script>
-
         // ==========================================
-        // COGNITO CONFIGURATION
+        // CONFIGURATION
         // ==========================================
 
         const poolData = {
-
-            UserPoolId:
-                "ap-south-1_QZT7vDGVW",
-
-            ClientId:
-                "470o9e2j7gd3888smk5cqqba9i"
-
+            UserPoolId: "ap-south-1_QZT7vDGVW",
+            ClientId: "470o9e2j7gd3888smk5cqqba9i"
         };
 
-
         const userPool =
-            new AmazonCognitoIdentity.CognitoUserPool(
-                poolData
-            );
+            new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
+        const SENSOR_API_URL =
+            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/sensor-data";
+
+        const WEATHER_API_URL =
+            "https://zag5shejfi.execute-api.ap-south-1.amazonaws.com/weather";
 
         // ==========================================
-        // CHECK AUTHENTICATION
+        // AUTHENTICATION AND FARMER EMAIL
         // ==========================================
 
-        const currentUser =
-            userPool.getCurrentUser();
-
+        const currentUser = userPool.getCurrentUser();
 
         if (!currentUser) {
+            window.location.href = "login.html";
+        } else {
+            currentUser.getSession(function(error, session) {
+                if (error || !session || !session.isValid()) {
+                    window.location.href = "login.html";
+                    return;
+                }
 
-            window.location.href =
-                "login.html";
+                // Save Cognito farmer ID for other pages.
+                const idToken = session.getIdToken();
+                const farmerId = idToken.payload.sub;
 
-        }
-        else {
+                sessionStorage.setItem("farmerId", farmerId);
 
-            currentUser.getSession(
-                function(error, session) {
-
-                    if (error || !session.isValid()) {
-
-                        window.location.href =
-                            "login.html";
-
+                currentUser.getUserAttributes(function(err, attributes) {
+                    if (err) {
+                        console.error("Unable to load farmer attributes:", err);
+                        document.getElementById("farmerEmail").textContent =
+                            "Email unavailable";
                         return;
-
                     }
 
+                    let email = "";
 
-                    // ==================================
-                    // GET FARMER INFORMATION
-                    // ==================================
-
-                    currentUser.getUserAttributes(
-                        function(error, attributes) {
-
-                            if (error) {
-
-                                console.error(error);
-
-                                return;
-
-                            }
-
-
-                            let email = "";
-
-
-                            attributes.forEach(
-                                function(attribute) {
-
-                                    if (
-                                        attribute.getName()
-                                        === "email"
-                                    ) {
-
-                                        email =
-                                            attribute.getValue();
-
-                                    }
-
-                                }
-                            );
-
-
-                            document.getElementById(
-                                "farmerEmail"
-                            ).textContent =
-                                email;
-
+                    attributes.forEach(function(attribute) {
+                        if (attribute.getName() === "email") {
+                            email = attribute.getValue();
                         }
-                    );
+                    });
 
-                }
-            );
-
+                    document.getElementById("farmerEmail").textContent =
+                        email || "Email unavailable";
+                });
+            });
         }
-
 
         // ==========================================
         // LOGOUT
         // ==========================================
 
-        document
-            .getElementById("logoutButton")
-            .addEventListener(
-                "click",
-                function() {
+        document.getElementById("logoutButton")
+            .addEventListener("click", function() {
+                const user = userPool.getCurrentUser();
 
-                    const user =
-                        userPool.getCurrentUser();
-
-
-                    if (user) {
-
-                        user.signOut();
-
-                    }
-
-
-                    window.location.href =
-                        "login.html";
-
+                if (user) {
+                    user.signOut();
                 }
-            );
 
+                sessionStorage.removeItem("farmerId");
+                sessionStorage.removeItem("farmId");
+                sessionStorage.removeItem("fieldId");
+                sessionStorage.removeItem("cropId");
+
+                window.location.href = "login.html";
+            });
+
+        // ==========================================
+        // LOAD SENSOR DATA
+        // ==========================================
+
+        async function loadSensorData() {
+            const temperatureValue =
+                document.getElementById("temperatureValue");
+            const humidityValue =
+                document.getElementById("humidityValue");
+            const soilMoistureValue =
+                document.getElementById("soilMoistureValue");
+
+            const temperatureStatus =
+                document.getElementById("temperatureStatus");
+            const humidityStatus =
+                document.getElementById("humidityStatus");
+            const soilMoistureStatus =
+                document.getElementById("soilMoistureStatus");
+
+            try {
+                const response = await fetch(SENSOR_API_URL);
+
+                if (!response.ok) {
+                    throw new Error("Sensor API returned HTTP " + response.status);
+                }
+
+                const result = await response.json();
+
+                if (!Array.isArray(result.sensorData) ||
+                    result.sensorData.length === 0) {
+                    throw new Error("No sensor readings are available.");
+                }
+
+                // The API should return newest readings first.
+                const latest = result.sensorData[0];
+
+                temperatureValue.textContent =
+                    latest.temperature + " °C";
+
+                humidityValue.textContent =
+                    latest.humidity + " %";
+
+                soilMoistureValue.textContent =
+                    latest.soilMoisture + " %";
+
+                const timestamp = latest.timestamp
+                    ? new Date(latest.timestamp).toLocaleString()
+                    : "Time unavailable";
+
+                temperatureStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+                humidityStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+                soilMoistureStatus.textContent =
+                    "Latest reading: " + timestamp;
+
+            } catch (error) {
+                console.error("Unable to load sensor data:", error);
+
+                temperatureStatus.textContent =
+                    "Unable to load sensor data";
+
+                humidityStatus.textContent =
+                    "Unable to load sensor data";
+
+                soilMoistureStatus.textContent =
+                    "Unable to load sensor data";
+            }
+        }
+
+        // ==========================================
+        // LOAD WEATHER DATA
+        // ==========================================
+
+        async function loadWeatherData() {
+            const weatherValue =
+                document.getElementById("weatherValue");
+            const weatherStatus =
+                document.getElementById("weatherStatus");
+
+            try {
+                const response = await fetch(WEATHER_API_URL);
+
+                if (!response.ok) {
+                    throw new Error("Weather API returned HTTP " + response.status);
+                }
+
+                const result = await response.json();
+                const weather = result.weather;
+
+                if (!weather || weather.temperature == null) {
+                    throw new Error(
+                        result.message || "Weather information is unavailable."
+                    );
+                }
+
+                weatherValue.textContent =
+                    weather.temperature + " °C";
+
+                const humidity = weather.humidity;
+                const windSpeed = weather.windSpeed;
+                const precipitation = weather.precipitation;
+
+                const details = [];
+
+                if (humidity != null) {
+                    details.push("Humidity " + humidity + "%");
+                }
+
+                if (windSpeed != null) {
+                    details.push("Wind " + windSpeed + " km/h");
+                }
+
+                if (precipitation != null) {
+                    details.push("Rain " + precipitation + " mm");
+                }
+
+                if (weather.timestamp) {
+                    details.push("Updated " + weather.timestamp);
+                } else if (weather.weatherTimestamp) {
+                    details.push("Updated " + weather.weatherTimestamp);
+                }
+
+                weatherStatus.textContent =
+                    details.length ? details.join(" · ") : "Weather loaded";
+
+            } catch (error) {
+                console.error("Unable to load weather data:", error);
+
+                weatherValue.textContent = "--";
+                weatherStatus.textContent = "Unable to load weather";
+            }
+        }
+
+        // ==========================================
+        // INITIAL LOAD AND REFRESH
+        // ==========================================
+
+        loadSensorData();
+        loadWeatherData();
+
+        // Refresh sensor readings every 30 seconds.
+        setInterval(loadSensorData, 30000);
+
+        // Refresh weather less frequently to avoid unnecessary API calls.
+        setInterval(loadWeatherData, 300000);
     </script>
 
 </body>
-
 </html>
