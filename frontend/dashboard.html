@@ -102,6 +102,7 @@
 
             <div class="dashboard-grid">
 
+                <!-- Farms -->
                 <div class="dashboard-card">
                     <div class="card-icon">🌾</div>
                     <h3>Farms</h3>
@@ -112,6 +113,7 @@
                     </button>
                 </div>
 
+                <!-- Fields -->
                 <div class="dashboard-card">
                     <div class="card-icon">📍</div>
                     <h3>Fields</h3>
@@ -122,6 +124,7 @@
                     </button>
                 </div>
 
+                <!-- Crops -->
                 <div class="dashboard-card">
                     <div class="card-icon">🌱</div>
                     <h3>Crops</h3>
@@ -132,6 +135,21 @@
                     </button>
                 </div>
 
+                <!-- Crop Growth: NEW -->
+                <div class="dashboard-card">
+                    <div class="card-icon">🌿</div>
+                    <h3>Crop Growth</h3>
+                    <p>
+                        Record plant height, growth stage, leaf condition,
+                        and observation dates.
+                    </p>
+                    <button class="dashboard-button" type="button"
+                        onclick="window.location.href='crop-growth.html'">
+                        Record Crop Growth →
+                    </button>
+                </div>
+
+                <!-- Environment -->
                 <div class="dashboard-card">
                     <div class="card-icon">🌡️</div>
                     <h3>Environment</h3>
@@ -142,6 +160,7 @@
                     </button>
                 </div>
 
+                <!-- Irrigation -->
                 <div class="dashboard-card">
                     <div class="card-icon">💧</div>
                     <h3>Irrigation</h3>
@@ -152,16 +171,18 @@
                     </button>
                 </div>
 
+                <!-- Crop Health -->
                 <div class="dashboard-card">
-                    <div class="card-icon">🌿</div>
+                    <div class="card-icon">🍃</div>
                     <h3>Crop Health</h3>
-                    <p>Monitor crop growth and maintain crop health history.</p>
+                    <p>Monitor crop health and maintain crop health history.</p>
                     <button class="dashboard-button" type="button"
                         onclick="alert('Crop health page integration is pending.')">
                         View Crop Health →
                     </button>
                 </div>
 
+                <!-- Alerts -->
                 <div class="dashboard-card">
                     <div class="card-icon alert-card-icon">🚨</div>
                     <h3>Alerts</h3>
@@ -172,6 +193,7 @@
                     </button>
                 </div>
 
+                <!-- Reports -->
                 <div class="dashboard-card">
                     <div class="card-icon">📊</div>
                     <h3>Reports</h3>
@@ -399,7 +421,6 @@
                     throw new Error("No sensor readings are available.");
                 }
 
-                // Select the newest reading using its timestamp.
                 const readings = result.sensorData
                     .filter(item => item.timestamp)
                     .sort((a, b) =>
@@ -550,7 +571,6 @@
                     return;
                 }
 
-                // Keep complete readings and sort from oldest to newest.
                 const readings = result.sensorData
                     .filter(item =>
                         item.timestamp &&
@@ -606,47 +626,48 @@
                     sensorHistoryChart.destroy();
                 }
 
-                const context = canvas.getContext("2d");
+                sensorHistoryChart = new Chart(
+                    canvas.getContext("2d"),
+                    {
+                        type: "line",
+                        data: chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
 
-                sensorHistoryChart = new Chart(context, {
-                    type: "line",
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-
-                        interaction: {
-                            intersect: false,
-                            mode: "index"
-                        },
-
-                        plugins: {
-                            legend: {
-                                position: "bottom"
+                            interaction: {
+                                intersect: false,
+                                mode: "index"
                             },
-                            title: {
-                                display: true,
-                                text: "Recent Environmental Sensor History"
-                            }
-                        },
 
-                        scales: {
-                            x: {
+                            plugins: {
+                                legend: {
+                                    position: "bottom"
+                                },
                                 title: {
                                     display: true,
-                                    text: "Reading Time"
+                                    text: "Recent Environmental Sensor History"
                                 }
                             },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: "Measured Value"
+
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: "Reading Time"
+                                    }
                                 },
-                                beginAtZero: true
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: "Measured Value"
+                                    },
+                                    beginAtZero: true
+                                }
                             }
                         }
                     }
-                });
+                );
 
                 message.textContent =
                     "Showing " + readings.length +
@@ -671,10 +692,7 @@
         loadWeatherData();
         loadSensorHistory();
 
-        // Refresh sensor readings every 30 seconds.
         setInterval(loadSensorData, 30000);
-
-        // Refresh weather data every 5 minutes.
         setInterval(loadWeatherData, 300000);
 
     </script>
